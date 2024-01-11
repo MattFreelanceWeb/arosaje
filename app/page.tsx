@@ -73,7 +73,7 @@ export default function Home() {
           </PopoverTrigger>
           <PopoverContent>
             <div className="flex flex-col items-center gap-4 p-2">
-              <Button as={Link} href="#" className="bg-transparent">Mon profil</Button>
+              <Button as={Link} href={`/profil/userid`} className="bg-transparent">Mon profil</Button>
               <Button>Se déconnecter</Button>
             </div>
           </PopoverContent>
