@@ -17,7 +17,8 @@ function Profile_ID_page({ }: Props) {
 
 
   return (
-    <main className='flex min-h-screen flex-col items-center justify-center p-8 relative'>
+    <main className='flex min-h-screen flex-col items-center justify-center p-8 relative '>
+      <Image className='absolute top-0 left-0 object-cover w-full h-full' src={'https://cdn.pixabay.com/photo/2015/04/19/08/33/flower-729512_960_720.jpg'} alt='' width={1280} height={847}/>
       <section className='absolute top-2 left-2'>
         <Button isIconOnly as={Link} href='/'>
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
@@ -28,8 +29,8 @@ function Profile_ID_page({ }: Props) {
       <section>
         <Avatar src={``} name={`jhon Doe`} size="lg" className='scale-150' />
       </section>
-      <section className='mt-10 w-full flex flex-col items-center justify-center gap-4'>
-        <div className='flex items-center gap-2'>
+      <section className='mt-10 w-full flex flex-col items-center justify-center gap-4 max-w-96 bg-white/30 backdrop-blur-xl border-2 rounded-md p-4'>
+        <div className='flex items-center gap-2 w-full'>
           {editName ?
             <div className='flex items-center gap-2'>
               <Button isIconOnly color='danger' onPress={() => { setEditName(false) }}><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
@@ -58,7 +59,7 @@ function Profile_ID_page({ }: Props) {
 
         <Divider className="my-4" />
 
-        <div className='flex items-center gap-2'>
+        <div className='flex items-center gap-2 w-full'>
           <Button isIconOnly color='danger' onPress={onOpen}>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
