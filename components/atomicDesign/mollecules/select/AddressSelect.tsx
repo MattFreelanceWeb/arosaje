@@ -1,11 +1,12 @@
 import { Select, SelectItem } from '@nextui-org/react'
 import React, { useState } from 'react'
 
-type Props = {}
+type Props = { setAddressSelected:Function}
 
-function AddressSelect({}: Props) {
+function AddressSelect({setAddressSelected}: Props) {
 
     const [stringAdress, setstringAdress] = useState('')
+    //setstringAdress(Object.values(addresses[parseInt(e.target.value)]).join(" ").replace(/ /g, "+"))
 
     const addresses = [
         {id:'uuid', number: '1020', street: 'chemin de la montagne', postCode: '38690', city: 'le grand lemps', lat: '' , lng: '' },
@@ -18,7 +19,7 @@ function AddressSelect({}: Props) {
     <Select
       label="Select an adress"
       className=""
-      onChange={(e) => setstringAdress(Object.values(addresses[parseInt(e.target.value)]).join(" ").replace(/ /g, "+"))}
+      onChange={(e) => setAddressSelected(addresses[parseInt(e.target.value)])}
     >
       {addresses.map((address, i) => (
         <SelectItem key={i} value={address.number + "+" + address.street + "+" + address.postCode + "+" + address.city}>

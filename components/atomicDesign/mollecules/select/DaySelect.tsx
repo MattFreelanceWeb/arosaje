@@ -1,9 +1,9 @@
 import { Select, SelectItem } from '@nextui-org/react'
 import React from 'react'
 
-type Props = {}
+type Props = {setDaySelected:Function}
 
-function DaySelect({ }: Props) {
+function DaySelect({ setDaySelected }: Props) {
 
     const days = ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche']
 
@@ -13,6 +13,7 @@ function DaySelect({ }: Props) {
                 label="Select a day"
                 className=""
                 selectionMode="multiple"
+                onChange={(e)=> setDaySelected(e.target.value.split(',').map(item => (days[parseInt(item)])))}
             >
                 {days.map((day, i) => (
                     <SelectItem key={i} value={day}>

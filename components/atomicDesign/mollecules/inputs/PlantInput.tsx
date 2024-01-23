@@ -3,11 +3,11 @@ import { Autocomplete, AutocompleteItem, Avatar, CircularProgress, Input } from 
 import React, { useEffect, useState } from 'react'
 import { useDebounce } from 'use-debounce'
 
-type Props = {}
+type Props = {setPlantSelected : Function}
 
 
 
-function PlantInput({ }: Props) {
+function PlantInput({ setPlantSelected }: Props) {
 
     type PlantObject = {
         common_name: string,
@@ -60,21 +60,21 @@ function PlantInput({ }: Props) {
                 label="Select a plant"
                 className=""
                 fullWidth
-                onInputChange={(e)=>setPlantQuery(e)}
+                onInputChange={(e) => setPlantQuery(e)}
                 variant="bordered"
                 placeholder="Select a plant"
                 labelPlacement="inside"
 
             >
-               
-                {plantArray.map((item,i )=> (<AutocompleteItem onPress={()=> console.log(item)} key={item.common_name} textValue={item.common_name}>{ isloading ? <CircularProgress aria-label="Loading..." /> : 
-                          <div className="flex gap-2 items-center">
-                          <Avatar alt={''} className="flex-shrink-0" size="sm" src={item.image_url} />
-                          <div className="flex flex-col">
+
+                {plantArray.map((item, i) => (<AutocompleteItem onPress={() => setPlantSelected(item)} key={item.common_name} textValue={item.common_name}>{isloading ? <CircularProgress aria-label="Loading..." /> :
+                    <div className="flex gap-2 items-center">
+                        <Avatar alt={''} className="flex-shrink-0" size="sm" src={item.image_url} />
+                        <div className="flex flex-col">
                             <span className="text-small">{item.common_name}</span>
                             <span className="text-tiny text-default-400">{item.scientific_name}</span>
-                          </div>
                         </div>
+                    </div>
                 }</AutocompleteItem>))}
 
             </Autocomplete>

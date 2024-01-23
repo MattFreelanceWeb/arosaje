@@ -1,6 +1,6 @@
 'use client'
 
-import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@nextui-org/react"
+import { Button, CircularProgress, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@nextui-org/react"
 import dynamic from "next/dynamic"
 import { useEffect, useMemo, useState } from "react"
 import Profile from "../../mollecules/badge/Profile"
@@ -31,23 +31,28 @@ export default function HomePage() {
   // }
 
   const user = {
-    id:'uuid',
-    isBotanist:false,
-    email:'jhonDoe@gmail.com ',
+    id: 'uuid',
+    isBotanist: false,
+    email: 'jhonDoe@gmail.com ',
     name: 'jhonDoe',
-    imageSrc:'https://mon_image_de_profil',
+    imageSrc: 'https://mon_image_de_profil',
     adress: [
-      {id:'uuid', number: '1020', street: 'chemin de la montagne', postCode: '38690', city: 'le grand lemps', lat: '' , lng: '' },
-      {id:'uuid', number: '1020', street: 'chemin de la montagne', postCode: '38690', city: 'le grand lemps', lat: '' , lng: '' },
-      {id:'uuid', number: '1020', street: 'chemin de la montagne', postCode: '38690', city: 'le grand lemps', lat: '' , lng: '' }
+      { id: 'uuid', number: '1020', street: 'chemin de la montagne', postCode: '38690', city: 'le grand lemps', lat: '', lng: '' },
+      { id: 'uuid', number: '1020', street: 'chemin de la montagne', postCode: '38690', city: 'le grand lemps', lat: '', lng: '' },
+      { id: 'uuid', number: '1020', street: 'chemin de la montagne', postCode: '38690', city: 'le grand lemps', lat: '', lng: '' }
     ],
-    plantOwned:[
-      {id:'uuid',common_name:'rose',scientific_name:'resea ',image_url:'https://source_de_l_image',adress:'adress de garde de plante', owner:'uuid_owner',guardian:'uuid_guardian'}
+    plantOwned: [
+      { id: 'uuid', common_name: 'rose', scientific_name: 'resea ', image_url: 'https://source_de_l_image', adress: 'adress de garde de plante', owner: 'uuid_owner', guardian: 'uuid_guardian' }
     ],
-    plantGuarded:[
-      {id:'uuid',common_name:'rose',scientific_name:'resea ',image_url:'https://source_de_l_image',adress:'adress de garde de plante',owner:'uuid_owner',guardian:'uuid_guardian'}
+    plantGuarded: [
+      { id: 'uuid', common_name: 'rose', scientific_name: 'resea ', image_url: 'https://source_de_l_image', adress: 'adress de garde de plante', owner: 'uuid_owner', guardian: 'uuid_guardian' }
     ],
   }
+
+  const [daySlected, setDaySlected] = useState()
+  const [plantSelected, setPlantSelected] = useState()
+  const [addressSelected, setAddressSelected] = useState()
+
 
 
   useEffect(() => {
@@ -62,7 +67,7 @@ export default function HomePage() {
   const Map = useMemo(() => dynamic(
     () => import('@/components/atomicDesign/mollecules/map/Map'),
     {
-      loading: () => <p>A map is loading</p>,
+      loading: () => <p className="flex flex-col items-center justify-center gap-8">A map is loading <CircularProgress /></p>,
       ssr: false
     }
   ), [])
@@ -91,11 +96,11 @@ export default function HomePage() {
               <>
                 <ModalHeader className="flex flex-col gap-1">Add a plant 🌱</ModalHeader>
                 <ModalBody className="flex flex-col items-center w-full justify-center">
-                  <PlantInput />
+                  <PlantInput setPlantSelected={setPlantSelected}/>
                   {/** select a day  */}
-                  <DaySelect />
+                  <DaySelect  setDaySelected={setDaySlected}/>
                   {/** select an adress  */}
-                  <AddressSelect />
+                  <AddressSelect setAddressSelected={setAddressSelected}/>
                   {/**component to take a picture or add a file and have a direct view on it */}
                   <div>
                     {/* <PhotoInput/> */}
@@ -105,7 +110,7 @@ export default function HomePage() {
                   <Button color="danger" variant="light" onPress={onClose} className="">
                     Close
                   </Button>
-                  <Button color="primary" onClick={() => { console.log('post action ') }}>
+                  <Button isDisabled={!(!!plantSelected && !!daySlected && !!addressSelected)} color="primary" onClick={() => { console.log({daySlected,plantSelected,addressSelected}) }}>
                     Post my plant
                   </Button>
                 </ModalFooter>
@@ -120,3 +125,27 @@ export default function HomePage() {
     </>
   )
 }
+
+// exemple de retour de la modale
+//
+// {
+//   "daySlected": [
+//     "samedi",
+//     "dimanche"
+//   ],
+//   "plantSelected": {
+//     "id": 122772,
+//     "common_name": "Avocado",
+//     "scientific_name": "Persea americana",
+//     "image_url": "https://bs.plantnet.org/image/o/b4e83f95dce979319ad70321a9023400d7bf5f48"
+//   },
+//   "addressSelected": {
+//     "id": "uuid",
+//     "number": "1020",
+//     "street": "chemin de la montagne",
+//     "postCode": "38690",
+//     "city": "le grand lemps",
+//     "lat": "",
+//     "lng": ""
+//   }
+// }
