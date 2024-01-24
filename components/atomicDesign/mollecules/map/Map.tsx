@@ -42,32 +42,57 @@ export default function MyMap(props: any) {
         }
     }, [])
 
+    useEffect(() => {
+
+        console.log("fetch disponnible plant(that don't belong to a guardian) nearby lat +-0.009 lng +-0.009 put it into an array and map trhough this array to render Markers on the map if some plant has the same address, put them inside an array and render them in the current array.")
+
+        const dataExemple = [
+            {
+                id: 122772,
+                common_name: "Avocado",
+                scientific_name: "Persea americana",
+                image_url: "https://bs.plantnet.org/image/o/b4e83f95dce979319ad70321a9023400d7bf5f48",
+                addresse: {
+                    id: "uuid",
+                    number: "1020",
+                    street: "chemin de la montagne",
+                    postCode: "38690",
+                    city: "le grand lemps",
+                    lat: "",
+                    lng: ""
+                },
+                owner : {
+                    id:'uuid',
+                },
+                guardian: null
+            }
+        ]
+    }, [])
+
+
 
     return (
         <div className="w-full h-full z-0">
             {position &&
-                <MapContainer center={position as LatLngExpression} zoom={13} scrollWheelZoom={false} style={{ height: '100vh' }}>
+                <MapContainer center={position as LatLngExpression} zoom={15} scrollWheelZoom={false} style={{ height: '100vh' }}>
                     <TileLayer
                         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     />
                     {/* position de l'user */}
                     <Marker position={position as LatLngExpression} >
-                        <Popup className="relative">
+                        <Popup className="">
                             You are here. 😉
-                            <div className="w-40 h-40 bg-blue-500 absolute -left-2 rounded-full opacity-50 animate-ping -z-10"></div>
-                            <div className="w-40 h-40 bg-blue-500 absolute -left-2 rounded-full opacity-30 scale-110 animate-ping -z-10"></div>
-                            <div className="w-40 h-40 bg-blue-500 absolute -left-2 rounded-full opacity-10 scale-125 animate-ping -z-10"></div>
                         </Popup>
                     </Marker>
 
                     {/** position des plantes à cliquer mapper à travers les plantes et afficher celles proches de l'user */}
-                    <Marker position={[position[0] + 0.01, position[1] + 0.02]}>
+                    <Marker position={[position[0] - 0.009, position[1] - 0.009]}>
                         <Popup>
-                            <Card  
+                            <Card
                                 isPressable
                                 className="w-full p-2 flex flex-col items-center justify-center"
-                                onClick={()=>{console.log('hello world')}}>
+                                onClick={(e) => { console.log(e.target) }}>
                                 <Avatar src="" name="Jhon Doe" size="sm" className="" />
                                 <p>Plant Nbr. : </p><Chip color="primary">3</Chip>
                             </Card>

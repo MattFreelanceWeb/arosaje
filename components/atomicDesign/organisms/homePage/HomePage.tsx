@@ -67,7 +67,7 @@ export default function HomePage() {
   const Map = useMemo(() => dynamic(
     () => import('@/components/atomicDesign/mollecules/map/Map'),
     {
-      loading: () => <p className="flex flex-col items-center justify-center gap-8">A map is loading <CircularProgress /></p>,
+      loading: () => <CircularProgress aria-label="Loading..." size="lg"/>,
       ssr: false
     }
   ), [])
