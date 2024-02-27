@@ -1,15 +1,42 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Image, Button, Link, Badge, Avatar, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Divider, Input } from '@nextui-org/react'
+import { useParams } from 'next/navigation';
 
 type Props = {}
 
 function Plant_id_page({}: Props) {
+
+	interface Plant {
+		id: number;
+		common_name: string;
+		scientific_name: string;
+		image_url: string;
+		ownerId: number;
+		guardianId: number | null;
+		addressId: number;
+		createdAt: string;
+		updatedAt: string;
+		comment: any[]; // Type des commentaires à définir
+		owner: {
+		  id: number;
+		  email: string;
+		  userName: string | null;
+		  password: string;
+		  imageSrc: string | null;
+		  createdAt: string;
+		  updatedAt: string;
+		};
+	  }
 	
 		const [modal1Open, setModal1Open] = useState(false);
 		const [modal2Open, setModal2Open] = useState(false);
-	  
+
+		const [plants, setPlants] = useState<Plant>()
+
+		const params = useParams()
+
 		const openModal = (modalNumber: number) => {
 		  switch (modalNumber) {
 			case 1:
@@ -29,15 +56,51 @@ function Plant_id_page({}: Props) {
 		  setModal2Open(false);
 		};
 
+		useEffect(() => {
+			const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsInJvbGUiOjIsImlhdCI6MTcwOTAzOTYxNCwiZXhwIjoxNzA5MDQzMjE0fQ.Rj7cUQtcTlBrgQtzr54fTvCXjdf84N0J6TA5sMPelW8";
+
+			const fetchPlants = async () => {
+				try {
+					const headers = {
+						Authorization: `Bearer ${token}`,
+						"Content-Type": "application/json",
+					};
+	
+					const url = `http://localhost:8080/api/plant/${params.id}`
+	
+					const response = await fetch(url, {
+						method: "GET",
+						headers: headers,
+					});
+					if (!response.ok) {
+						console.log(response)
+						throw new Error("Erreur lors de la récupération des données des plantes");
+					}
+					const data = await response.json();
+	
+					//log for dev mode
+					console.log(data.data)
+	
+					setPlants(data.data);
+				} catch (error) {
+					console.error(error);
+				}
+			}
+	
+			fetchPlants();
+		}, [params.id])
+		
+
 	return (
 		<main className='flex min-h-screen flex-col items-center p-4'>
 			<div className="absolute top-5 left-5">
-				<Button color='primary' as={Link} href='/'>Retour</Button>
+				<Button color='primary' as={Link} href={`/plant/userId=${plants?.ownerId}&addressId=${plants?.addressId}`}>Retour</Button>
 			</div>
+
 			<div className='absolute top-32 gap-4 grid grid-cols-1 sm:grid-cols-2 sm:top-16'>
 				<Image 
 				className='w-72 h-72 sm:w-80 sm:h-full'
-				src={'https://cdn.pixabay.com/photo/2014/05/23/00/16/hammock-351606_1280.jpg'}
+				src={plants?.image_url}
 				alt=''
 				width='100%'/>
 				<section className='w-full h-72 gap-4 sm:w-full sm:h-full bg-white/30 backdrop-blur-xl border-2 rounded-md'>
@@ -47,7 +110,9 @@ function Plant_id_page({}: Props) {
 					<div className='flex absolute bottom-2 left-1'>
 						<Button onClick={() => openModal(2)} className='bg-white h-[60px]'>
 							<Image
-							src={'https://static-00.iconduck.com/assets.00/question-mark-circle-outline-icon-512x512-vxeroxyp.png'} 
+							src={'https://static-00.iconduck.com/assets.00/question-mark-circle-outline-icon-512x512-vxeroxyp.png'}
+
+							alt='' 
 							width='100%'
 							className='w-10 object-cover h-[40px]' />
 						</Button>
@@ -55,10 +120,11 @@ function Plant_id_page({}: Props) {
 					</div>
 					<div className='flex absolute bottom-1 right-3'>
 						<Button onClick={() => openModal(1)} className='bg-white h-[60px]'>
-							<Badge color="primary" content={99} shape="circle">
+							<Badge color="primary" content={ plants?.comment.length } shape="circle">
 								<Image 
 								width='100%'
 								src={'https://us.123rf.com/450wm/siamimages/siamimages1601/siamimages160103031/51141637-speech-bubble-design-symbole-ic%C3%B4ne-illustration.jpg'}
+								alt=''
 								className="w-15 object-cover h-[45px]" />
 							</Badge>
 						</Button>

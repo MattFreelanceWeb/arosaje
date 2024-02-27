@@ -7,8 +7,7 @@ import "leaflet-defaulticon-compatibility"
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css"
 import { useEffect, useState } from "react"
 import { LatLngExpression } from "leaflet"
-import { Avatar, Button, Card, Chip } from "@nextui-org/react"
-
+import { Avatar, Button, Card, Chip, Link } from "@nextui-org/react"
 
 export default function MyMap(props: any) {
 
@@ -16,7 +15,7 @@ export default function MyMap(props: any) {
     const { zoom } = props
 
     const [position, setPosition] = useState<number[]>()
-
+    const [plants, setPlants] = useState<any[]>([]);
 
     useEffect(() => {
 
@@ -24,8 +23,8 @@ export default function MyMap(props: any) {
             // La géolocalisation est disponible
             navigator.geolocation.getCurrentPosition(
                 (position) => {
-                    const latitude = position.coords.latitude;
-                    const longitude = position.coords.longitude;
+                    const latitude = position.coords.latitude +0.0005;
+                    const longitude = position.coords.longitude +0.0005;
 
                     setPosition([latitude, longitude])
                 },
@@ -42,32 +41,45 @@ export default function MyMap(props: any) {
         }
     }, [])
 
+
     useEffect(() => {
+        const fetchPlants = async () => {
 
-        console.log("fetch disponnible plant(that don't belong to a guardian) nearby lat +-0.009 lng +-0.009 put it into an array and map trhough this array to render Markers on the map if some plant has the same address, put them inside an array and render them in the current array.")
+            //TODO: remplacer le token pour l'obtenir de manière dynamique
 
-        const dataExemple = [
-            {
-                id: 122772,
-                common_name: "Avocado",
-                scientific_name: "Persea americana",
-                image_url: "https://bs.plantnet.org/image/o/b4e83f95dce979319ad70321a9023400d7bf5f48",
-                addresse: {
-                    id: "uuid",
-                    number: "1020",
-                    street: "chemin de la montagne",
-                    postCode: "38690",
-                    city: "le grand lemps",
-                    lat: "",
-                    lng: ""
-                },
-                owner : {
-                    id:'uuid',
-                },
-                guardian: null
+            const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsInJvbGUiOjIsImlhdCI6MTcwOTA0Mzc0MSwiZXhwIjoxNzA5MDQ3MzQxfQ.7CBtNdP_ohiIwa-L6SVxs6ScqVhaY27l_vpWgPDeSf0";
+
+
+  
+            try {
+                const headers = {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                };
+    
+                const url = `http://localhost:8080/api/plant/by-coordinates/${position && position[0]}/${position && position[1]}`
+
+                const response = await fetch(url, {
+                    method: "GET",
+                    headers: headers,
+                });
+                if (!response.ok) {
+                    console.log(response)
+                    throw new Error("Erreur lors de la récupération des données des plantes");
+                }
+                const data = await response.json();
+
+                //log for dev mode
+                console.log(data.data)
+
+                setPlants(data.data); 
+            } catch (error) {
+                console.error(error);
             }
-        ]
-    }, [])
+        };
+
+        fetchPlants();
+    }, [position]);
 
 
 
@@ -85,22 +97,32 @@ export default function MyMap(props: any) {
                             You are here. 😉
                         </Popup>
                     </Marker>
+                    {
+                        plants && (
+                            <>
+                                {plants.map((plant) => (
 
-                    {/** position des plantes à cliquer mapper à travers les plantes et afficher celles proches de l'user */}
-                    <Marker position={[position[0] - 0.009, position[1] - 0.009]}>
-                        <Popup>
-                            <Card
-                                isPressable
-                                className="w-full p-2 flex flex-col items-center justify-center"
-                                onClick={(e) => { console.log(e.target) }}>
-                                <Avatar src="" name="Jhon Doe" size="sm" className="" />
-                                <p>Plant Nbr. : </p><Chip color="primary">3</Chip>
-                            </Card>
-                        </Popup>
-                    </Marker>
+                                    <Marker key={plant.id} position={[plant.address.lat, plant.address.lng]}>
+
+                                        <Popup className="">
+                                            <Card isPressable as={Link} href={`/plant/userId=${plant.userId}&addressId=${plant.addressId}`} className="w-36 h-36 flex flex-col items-center justify-center gap-1 p-2">
+                                                <Avatar name={plant.owner.email} />
+                                                <h3>{plant.common_name}</h3>
+                                                <p className="capitalize"> plante à garder: {plant.plants.length}</p>
+                                                <Button color="primary">voir</Button>
+                                            </Card>
+                                        </Popup>
+                                        
+                                    </Marker>
+                                ))}
+                            </>
+                        )
+                    }
 
                 </MapContainer>
             }
         </div>
     )
 }
+
+
