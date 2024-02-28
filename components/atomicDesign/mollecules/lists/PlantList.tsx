@@ -1,7 +1,8 @@
 'use client'
 
 import { Button, Card, CardBody, Image, Avatar, Badge, Link } from "@nextui-org/react"
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+
 import { useEffect, useState } from "react";
 
 type Props = {}
@@ -12,7 +13,11 @@ function PlantList({ }: Props) {
 
     const params = useParams()
 
+    const router = useRouter()
+
     useEffect(() => {
+
+        const token = localStorage.getItem('token')
 
         const decodedQueryString = decodeURIComponent(params.list_id as string); // Décoder la chaîne de requête
 
@@ -36,8 +41,6 @@ function PlantList({ }: Props) {
 
         //     //TODO: remplacer le token pour l'obtenir de manière dynamique
 
-        const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsInJvbGUiOjIsImlhdCI6MTcwOTA0MTM4NiwiZXhwIjoxNzA5MDQ0OTg2fQ.FRwWnuLMYGeeotdbTlbpwLtOe-X-6MaR-BtsU_RmIS8";
-
         const fetchPlants = async () => {
             try {
                 const headers = {
@@ -53,6 +56,10 @@ function PlantList({ }: Props) {
                 });
                 if (!response.ok) {
                     console.log(response)
+                    if(response.status === 403){
+                        localStorage.removeItem('token')
+                        router.push("/connection")
+                    }
                     throw new Error("Erreur lors de la récupération des données des plantes");
                 }
                 const data = await response.json();
@@ -67,7 +74,7 @@ function PlantList({ }: Props) {
         }
 
         fetchPlants();
-    }, [params.list_id]);
+    }, [params.list_id,router]);
 
 
     return (
@@ -79,7 +86,7 @@ function PlantList({ }: Props) {
                 <div className="gap-4 grid grid-cols-1 sm:grid-cols-2">
                     {plants.map((item) => (
                         <>
-     
+
                             <Card
                                 isPressable
                                 isBlurred
@@ -95,9 +102,6 @@ function PlantList({ }: Props) {
                                                 <div className="flex flex-col gap-1">
                                                     <h3 className="font-semibold text-foreground/90">{item.common_name}</h3>
                                                     <p className="text-small text-foreground/80">{item.scientific_name}</p>
-                                                    <div className="mt-2 flex items-center gap-4">
-                                                        <Avatar src='' /><h1>{item.owner.email}</h1>
-                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -107,9 +111,9 @@ function PlantList({ }: Props) {
                                             shadow="sm"
                                             radius="lg"
                                             width="100%"
-                                            alt={item.image_url}
+                                            alt={item.common_name}
                                             className="w-full object-cover h-[140px]"
-                                            src={item.img} />
+                                            src={item.image_url || "https://cdn.pixabay.com/photo/2024/01/04/09/34/plant-8486960_960_720.png"} />
                                     </div>
                                     <div className="flex flex-col mt-3 mr-2 gap-1">
                                         {/** footer */}

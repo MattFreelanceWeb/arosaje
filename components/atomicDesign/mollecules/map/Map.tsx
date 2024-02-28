@@ -8,6 +8,8 @@ import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility
 import { useEffect, useState } from "react"
 import { LatLngExpression } from "leaflet"
 import { Avatar, Button, Card, Chip, Link } from "@nextui-org/react"
+import { Router } from "next/router"
+import { useRouter } from "next/navigation"
 
 export default function MyMap(props: any) {
 
@@ -16,6 +18,8 @@ export default function MyMap(props: any) {
 
     const [position, setPosition] = useState<number[]>()
     const [plants, setPlants] = useState<any[]>([]);
+
+    const router = useRouter()
 
     useEffect(() => {
 
@@ -45,11 +49,7 @@ export default function MyMap(props: any) {
     useEffect(() => {
         const fetchPlants = async () => {
 
-            //TODO: remplacer le token pour l'obtenir de manière dynamique
-
-            const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsInJvbGUiOjIsImlhdCI6MTcwOTA0Mzc0MSwiZXhwIjoxNzA5MDQ3MzQxfQ.7CBtNdP_ohiIwa-L6SVxs6ScqVhaY27l_vpWgPDeSf0";
-
-
+            const token = localStorage.getItem('token');
   
             try {
                 const headers = {
@@ -64,6 +64,10 @@ export default function MyMap(props: any) {
                     headers: headers,
                 });
                 if (!response.ok) {
+                    if(response.status === 403){
+                        localStorage.removeItem('token')
+                        router.push("/connection")
+                    }
                     console.log(response)
                     throw new Error("Erreur lors de la récupération des données des plantes");
                 }
@@ -102,7 +106,7 @@ export default function MyMap(props: any) {
                             <>
                                 {plants.map((plant) => (
 
-                                    <Marker key={plant.id} position={[plant.address.lat, plant.address.lng]}>
+                                    <Marker key={plant.id} position={[plant.address.lat, plant.address.lng]} riseOnHover >
 
                                         <Popup className="">
                                             <Card isPressable as={Link} href={`/plant/userId=${plant.userId}&addressId=${plant.addressId}`} className="w-36 h-36 flex flex-col items-center justify-center gap-1 p-2">

@@ -1,16 +1,56 @@
 'use client'
 
-import { Button, CircularProgress, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@nextui-org/react"
+import { Button, CircularProgress, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Spinner, useDisclosure } from "@nextui-org/react"
 import dynamic from "next/dynamic"
 import { useEffect, useMemo, useState } from "react"
 import Profile from "../../mollecules/badge/Profile"
 import PlantInput from "../../mollecules/inputs/PlantInput"
 import DaySelect from "../../mollecules/select/DaySelect"
 import AddressSelect from "../../mollecules/select/AddressSelect"
+import PhotoInput from "../../mollecules/inputs/PhotoInput"
+const jwt = require("jsonwebtoken")
 
 
 
 export default function HomePage() {
+
+  // todo: export interface in a separate file with export
+
+  interface User {
+    userId: number;
+    userName: string;
+    email: string;
+    address: Address[];
+    plantsOwned: Plant[];
+    plantsGuarded: Plant[];
+  }
+
+  interface Address {
+    id: number;
+    number: number;
+    street: string;
+    postalCode: number;
+    city: string;
+    country: string;
+    lat: number;
+    lng: number;
+    userId: number;
+    createdAt: string;
+    updatedAt: string;
+  }
+
+  interface Plant {
+    common_name: string;
+    scientific_name: string;
+    image_url: string;
+  }
+
+  interface PlantData {
+    common_name?: string;
+    scientific_name?: string;
+    image_url?: string;
+    addressId?: number;
+  }
 
   // const [latitude, setLatitude] = useState<number>(0)
   // const [longitude, setLongitude] = useState<number>(0)
@@ -30,44 +70,94 @@ export default function HomePage() {
   //   }
   // }
 
-  const user = {
-    id: 'uuid',
-    isBotanist: false,
-    email: 'jhonDoe@gmail.com ',
-    name: 'jhonDoe',
-    imageSrc: 'https://mon_image_de_profil',
-    adress: [
-      { id: 'uuid', number: '1020', street: 'chemin de la montagne', postCode: '38690', city: 'le grand lemps', lat: '', lng: '' },
-      { id: 'uuid', number: '1020', street: 'chemin de la montagne', postCode: '38690', city: 'le grand lemps', lat: '', lng: '' },
-      { id: 'uuid', number: '1020', street: 'chemin de la montagne', postCode: '38690', city: 'le grand lemps', lat: '', lng: '' }
-    ],
-    plantOwned: [
-      { id: 'uuid', common_name: 'rose', scientific_name: 'resea ', image_url: 'https://source_de_l_image', adress: 'adress de garde de plante', owner: 'uuid_owner', guardian: 'uuid_guardian' }
-    ],
-    plantGuarded: [
-      { id: 'uuid', common_name: 'rose', scientific_name: 'resea ', image_url: 'https://source_de_l_image', adress: 'adress de garde de plante', owner: 'uuid_owner', guardian: 'uuid_guardian' }
-    ],
-  }
 
   const [daySlected, setDaySlected] = useState()
-  const [plantSelected, setPlantSelected] = useState()
-  const [addressSelected, setAddressSelected] = useState()
+  const [plantSelected, setPlantSelected] = useState<Plant>()
+  const [addressSelected, setAddressSelected] = useState<Address>()
+  const [user, setUser] = useState<User>()
+  const [isPlantLoading, setIsPlantLoading] = useState(false)
+
+  const createPlant = async (plantData: PlantData) => {
+    setIsPlantLoading(true)
+    try {
+      const token = localStorage.getItem("token")
+      const decodedToken = await jwt.decode(token, { complete: true });
+
+      const userId = await decodedToken.payload.userId
+
+      const headers = {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      };
+
+      const response = await fetch(`http://localhost:8080/api/plant/users/${userId}/plants`, {
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify(plantData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Erreur lors de la création de la plante');
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error(error);
+      throw new Error('Une erreur est survenue lors de la création de la plante');
+    } finally{
+      setIsPlantLoading(false)
+    }
+  };
 
 
 
   useEffect(() => {
 
-    // route guard
-    let isConnected: Boolean = false
 
-    isConnected ? <> {console.log('you are connected')} </> : <> {console.log('you need to connect before landing here')} </>
+    const fetchUser = async () => {
+
+      try {
+
+        const token = localStorage.getItem("token")
+        const decodedToken = await jwt.decode(token, { complete: true });
+
+        const userId = await decodedToken.payload.userId
+
+        const headers = {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        };
+
+        const url = `http://localhost:8080/api/user/${userId}`
+
+        const response = await fetch(url, {
+          method: "GET",
+          headers: headers,
+        });
+        if (!response.ok) {
+          console.log(response)
+          throw new Error("Erreur lors de la récupération des données des plantes");
+        }
+        const data = await response.json();
+
+        //log for dev mode
+        console.log(data)
+
+        setUser({ ...data, id: userId });
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchUser()
 
   }, [])
 
   const Map = useMemo(() => dynamic(
     () => import('@/components/atomicDesign/mollecules/map/Map'),
     {
-      loading: () => <CircularProgress aria-label="Loading..." size="lg"/>,
+      loading: () => <CircularProgress aria-label="Loading..." size="lg" />,
       ssr: false
     }
   ), [])
@@ -76,8 +166,13 @@ export default function HomePage() {
 
   return (
     <>
-      {/** composant badge profil */}
-      <Profile imgSrc={''} userName={''} userId={'testuser'} />
+      {user && (
+        <>
+          {/** composant badge profil */}
+          <Profile imgSrc={''} userName={user?.email} userId={user?.userId} />
+        </>
+      )}
+
 
       {/** composant pour trigger le flow de post d'une plante */}
       <section className={`absolute w-full bottom-4 flex items-center justify-around z-[1000] `}>
@@ -95,22 +190,30 @@ export default function HomePage() {
             {(onClose) => (
               <>
                 <ModalHeader className="flex flex-col gap-1">Add a plant 🌱</ModalHeader>
+
                 <ModalBody className="flex flex-col items-center w-full justify-center">
-                  <PlantInput setPlantSelected={setPlantSelected}/>
-                  {/** select a day  */}
-                  <DaySelect  setDaySelected={setDaySlected}/>
-                  {/** select an adress  */}
-                  <AddressSelect setAddressSelected={setAddressSelected}/>
-                  {/**component to take a picture or add a file and have a direct view on it */}
-                  <div>
-                    {/* <PhotoInput/> */}
-                  </div>
+                  {isPlantLoading ? <Spinner />
+                    :
+                    <>
+                      <PlantInput setPlantSelected={setPlantSelected} />
+
+                      {/** select a day  */}
+                      {/* <DaySelect setDaySelected={setDaySlected} /> */}
+
+                      {/** select an adress  */}
+                      <AddressSelect setAddressSelected={setAddressSelected} addresses={user?.address} />
+                      {/**component to take a picture or add a file and have a direct view on it */}
+                      {/* <div>
+                        <PhotoInput/>
+                      </div> */}
+                    </>}
+
                 </ModalBody>
                 <ModalFooter className="w-full flex items-center justify-between">
                   <Button color="danger" variant="light" onPress={onClose} className="">
                     Close
                   </Button>
-                  <Button isDisabled={!(!!plantSelected && !!daySlected && !!addressSelected)} color="primary" onClick={() => { console.log({daySlected,plantSelected,addressSelected}) }}>
+                  <Button isDisabled={!(!!plantSelected && !!addressSelected)} color="primary" onClick={() => { createPlant({ common_name: plantSelected?.common_name, scientific_name: plantSelected?.scientific_name, image_url: plantSelected?.image_url, addressId: addressSelected?.id }) }}>
                     Post my plant
                   </Button>
                 </ModalFooter>
@@ -125,27 +228,3 @@ export default function HomePage() {
     </>
   )
 }
-
-// exemple de retour de la modale
-//
-// {
-//   "daySlected": [
-//     "samedi",
-//     "dimanche"
-//   ],
-//   "plantSelected": {
-//     "id": 122772,
-//     "common_name": "Avocado",
-//     "scientific_name": "Persea americana",
-//     "image_url": "https://bs.plantnet.org/image/o/b4e83f95dce979319ad70321a9023400d7bf5f48"
-//   },
-//   "addressSelected": {
-//     "id": "uuid",
-//     "number": "1020",
-//     "street": "chemin de la montagne",
-//     "postCode": "38690",
-//     "city": "le grand lemps",
-//     "lat": "",
-//     "lng": ""
-//   }
-// }

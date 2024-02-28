@@ -24,10 +24,12 @@ export const IsAuthProvider= ({ children }:any) => {
   useEffect(() => {
     const token = localStorage.getItem('token');
 
-    const isTokenExpired = (token:string) => {
+    const isTokenExpired = async (token:string) => {
       try {
-        const decodedToken = jwt.decode(token, { complete: true });
+        const decodedToken = await jwt.decode(token, { complete: true });
         if (!decodedToken) {
+          localStorage.removeItem(token)
+          router.push("/connection")
           return true; // Le token est invalide ou expiré
         }
     
@@ -41,7 +43,7 @@ export const IsAuthProvider= ({ children }:any) => {
       }
     };
 
-    token && isTokenExpired(token as string) && router.push("/connection")
+    isTokenExpired(token as string)
   
   }, [router])
   
