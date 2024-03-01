@@ -27,8 +27,8 @@ export default function MyMap(props: any) {
             // La géolocalisation est disponible
             navigator.geolocation.getCurrentPosition(
                 (position) => {
-                    const latitude = position.coords.latitude +0.0005;
-                    const longitude = position.coords.longitude +0.0005;
+                    const latitude = position.coords.latitude
+                    const longitude = position.coords.longitude;
 
                     setPosition([latitude, longitude])
                 },
@@ -90,7 +90,7 @@ export default function MyMap(props: any) {
     return (
         <div className="w-full h-full z-0">
             {position &&
-                <MapContainer center={position as LatLngExpression} zoom={15} scrollWheelZoom={false} style={{ height: '100vh' }}>
+                <MapContainer center={position as LatLngExpression} zoom={20} scrollWheelZoom={false} style={{ height: '100vh' }}>
                     <TileLayer
                         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

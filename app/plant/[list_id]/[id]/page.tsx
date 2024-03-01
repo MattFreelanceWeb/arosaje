@@ -151,8 +151,12 @@ function Plant_id_page({ }: Props) {
 				<section className='w-full h-72 gap-4 sm:w-full sm:h-full bg-white/30 backdrop-blur-xl border-2 rounded-md overflow-y-auto relative'>
 					<div className='absolute top-2 w-full px-4 flex flex-col gap-4'>
 						{plants && plants?.comment?.length > 0 ? plants?.comment.map((item, i) => (
-							<div key={i} className={`text-sm sm:text-base text-center w-full h-12 flex items-center justify-center rounded-md bg-black text-white`}>
-								{item.content}
+							<div key={i} className={`text-sm sm:text-base text-center w-full flex items-center justify-center flex-col gap-4 rounded-md  text-white ${item.User.id === plants.ownerId? "bg-green-500" : "bg-black"}`}>
+								<h2> de:{item.User.userName? item.User.userName : item.User.email}</h2>
+								<p className=' '>{item.content}</p>
+								<p> 
+									time: {item.createdAt}
+								</p>
 							</div>))
 							:
 							<div className='text-sm sm:text-base text-center w-full h-12 flex items-center justify-center rounded-md'>

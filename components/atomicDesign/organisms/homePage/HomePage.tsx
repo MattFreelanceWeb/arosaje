@@ -8,6 +8,7 @@ import PlantInput from "../../mollecules/inputs/PlantInput"
 import DaySelect from "../../mollecules/select/DaySelect"
 import AddressSelect from "../../mollecules/select/AddressSelect"
 import PhotoInput from "../../mollecules/inputs/PhotoInput"
+import CreateAddress from "../../mollecules/inputs/CreateAddress"
 const jwt = require("jsonwebtoken")
 
 
@@ -52,25 +53,6 @@ export default function HomePage() {
     addressId?: number;
   }
 
-  // const [latitude, setLatitude] = useState<number>(0)
-  // const [longitude, setLongitude] = useState<number>(0)
-
-  // const [adressSelected, setAdressSelected] = useState<[latitude: number, longitude: number]>()
-
-  // const fetchLatLngFromGvt = async (stringAdress:string) => {
-  //   try {
-  //     const reponse = await fetch(`https://api-adresse.data.gouv.fr/search/?q=${stringAdress}`,{method: "GET"});
-  //     const data = await reponse.json()
-  //     const latLng = data.features[0].geometry.coordinates
-  //     console.log(latLng)
-  //     return latLng
-
-  //   } catch (error : any) {
-  //     console.error(`Erreur lors du téléchargement : ${error}`);
-  //   }
-  // }
-
-
   const [daySlected, setDaySlected] = useState()
   const [plantSelected, setPlantSelected] = useState<Plant>()
   const [addressSelected, setAddressSelected] = useState<Address>()
@@ -105,7 +87,7 @@ export default function HomePage() {
     } catch (error) {
       console.error(error);
       throw new Error('Une erreur est survenue lors de la création de la plante');
-    } finally{
+    } finally {
       setIsPlantLoading(false)
     }
   };
@@ -201,7 +183,8 @@ export default function HomePage() {
                       {/* <DaySelect setDaySelected={setDaySlected} /> */}
 
                       {/** select an adress  */}
-                      <AddressSelect setAddressSelected={setAddressSelected} addresses={user?.address} />
+                      {user?.address &&  user?.address.length > 0 ? <AddressSelect setAddressSelected={setAddressSelected} addresses={user?.address} /> : <CreateAddress />}
+
                       {/**component to take a picture or add a file and have a direct view on it */}
                       {/* <div>
                         <PhotoInput/>

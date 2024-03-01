@@ -7,9 +7,31 @@ import { useEffect, useState } from "react";
 
 type Props = {}
 
+interface Plant {
+    id: number;
+    common_name: string;
+    scientific_name: string;
+    image_url: string;
+    ownerId: number;
+    guardianId: number | null;
+    addressId: number;
+    createdAt: string;
+    updatedAt: string;
+    owner: {
+        id: number;
+        email: string;
+        userName: string;
+        password: string;
+        imageSrc: string | null;
+        createdAt: string;
+        updatedAt: string;
+    };
+    comment: any[]; // Vous pouvez définir un type spécifique pour les commentaires si nécessaire
+}
+
 function PlantList({ }: Props) {
 
-    const [plants, setPlants] = useState<any[]>()
+    const [plants, setPlants] = useState<Plant[]>()
 
     const params = useParams()
 
@@ -37,7 +59,6 @@ function PlantList({ }: Props) {
         const userId = queryParams["userId"]; // 3
         const addressId = queryParams["addressId"]; // 1
 
-        // const fetchPlants = async () => {
 
         //     //TODO: remplacer le token pour l'obtenir de manière dynamique
 
@@ -56,7 +77,7 @@ function PlantList({ }: Props) {
                 });
                 if (!response.ok) {
                     console.log(response)
-                    if(response.status === 403){
+                    if (response.status === 403) {
                         localStorage.removeItem('token')
                         router.push("/connection")
                     }
@@ -74,16 +95,29 @@ function PlantList({ }: Props) {
         }
 
         fetchPlants();
-    }, [params.list_id,router]);
+    }, [params.list_id, router]);
 
 
     return (
         <>
-            <div className="absolute top-5 left-5">
-                <Button color='primary' as={Link} href='/'>Retour</Button>
+            <div className=" w-full flex items-center justify-evenly fixed top-0 left-0 z-50 gap-4 bg-white/30 backdrop-blur-xl py-4 ">
+                <div className="">
+                    <Button color='primary' as={Link} href='/'>Retour</Button>
+                </div>
+                {plants && <>
+                    <div className="">
+                        <h2 className="font-bold text-2xl"><span className="text-sm">Plante de :</span> {plants[0].owner.userName ? plants[0].owner.userName : plants[0].owner.email}</h2>
+                    </div>
+                    <div>
+                        <Button className="capitalize" color="success">garder</Button>
+                    </div>
+                    </>
+                }
             </div>
+
+
             {plants && (
-                <div className="gap-4 grid grid-cols-1 sm:grid-cols-2">
+                <div className="gap-4 grid grid-cols-1 mt-24 sm:grid-cols-2">
                     {plants.map((item) => (
                         <>
 
