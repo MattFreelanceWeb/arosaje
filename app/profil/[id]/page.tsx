@@ -1,185 +1,175 @@
 'use client'
 
-import { Avatar, Button, Card, CardBody, Chip, Divider, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from '@nextui-org/react'
+import AddressList from '@/components/atomicDesign/mollecules/inputs/AddressList'
+import CreateAddress from '@/components/atomicDesign/mollecules/inputs/CreateAddress'
+import ListPlant from '@/components/atomicDesign/mollecules/lists/ListPlant'
+import ListPlantOwned from '@/components/atomicDesign/mollecules/lists/ListPlant'
+import { Avatar, Button, Card, CardBody, Chip, Divider, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Spinner, useDisclosure } from '@nextui-org/react'
 import Image from 'next/image'
 import Link from 'next/link'
+const jwt = require("jsonwebtoken")
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 type Props = {}
 
 function Profile_ID_page({ }: Props) {
 
+  interface User {
+    userId: number;
+    userName: string;
+    email: string;
+    address: Address[];
+    plantsOwned: Plant[];
+    plantsGuarded: Plant[];
+  }
+
+  interface Address {
+    id: number;
+    number: number;
+    street: string;
+    postalCode: number;
+    city: string;
+    country: string;
+    lat: number;
+    lng: number;
+    userId: number;
+    createdAt: string;
+    updatedAt: string;
+  }
+
+  interface Plant {
+    common_name: string;
+    scientific_name: string;
+    image_url: string;
+  }
+
+  interface PlantData {
+    common_name?: string;
+    scientific_name?: string;
+    image_url?: string;
+    addressId?: number;
+  }
+
   const [editName, setEditName] = useState(false)
   const [nameValue, setNameValue] = useState('Jhon Doe')
+  const [user, setUser] = useState<User>()
+
+
+
+  useEffect(() => {
+
+
+    const fetchUser = async () => {
+
+      try {
+
+        const token = localStorage.getItem("token")
+        const decodedToken = await jwt.decode(token, { complete: true });
+
+        const userId = await decodedToken.payload.userId
+
+        const headers = {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        };
+
+        const url = `http://localhost:8080/api/user/${userId}`
+
+        const response = await fetch(url, {
+          method: "GET",
+          headers: headers,
+        });
+        if (!response.ok) {
+          console.log(response)
+          throw new Error("Erreur lors de la récupération des données des plantes");
+        }
+        const data = await response.json();
+
+        //log for dev mode
+        console.log(data)
+
+        setUser({ ...data, id: userId });
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchUser()
+
+  }, [])
+
+
+
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
 
   return (
     <main className='flex min-h-screen flex-col items-center justify-center p-8 relative '>
-      <Image className='absolute top-0 left-0 object-cover w-full h-full' src={'https://cdn.pixabay.com/photo/2015/04/19/08/33/flower-729512_960_720.jpg'} alt='' width={1280} height={847}/>
-      <section className='absolute top-2 left-2'>
-        <Button isIconOnly as={Link} href='/'>
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
-          </svg>
-        </Button>
-      </section>
-      <section>
-        <Avatar src={``} name={`jhon Doe`} size="lg" className='scale-150' />
-      </section>
-      <section className='mt-10 w-full flex flex-col items-center justify-center gap-4 max-w-96 bg-white/30 backdrop-blur-xl border-2 rounded-md p-4'>
-        <div className='flex items-center gap-2 w-full'>
-          {editName ?
-            <div className='flex items-center gap-2'>
-              <Button isIconOnly color='danger' onPress={() => { setEditName(false) }}><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+      {user ?
+        <>
+
+          <Image className='absolute top-0 left-0 object-cover w-full h-full' src={'https://cdn.pixabay.com/photo/2015/04/19/08/33/flower-729512_960_720.jpg'} alt='' width={1280} height={847} />
+          <section className='absolute top-2 left-2'>
+            <Button isIconOnly as={Link} href='/'>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
               </svg>
-              </Button>
-              <Button isIconOnly color='success'><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-              </svg>
-              </Button>
+            </Button>
+          </section>
+          <section>
+            <Avatar src={``} name={user.email} size="lg" className='scale-150' />
+
+          </section>
+          <section className='mt-10 w-full flex flex-col items-center justify-center gap-4 max-w-96 bg-white/30 backdrop-blur-xl border-2 rounded-md p-4'>
+            <div className='flex items-center gap-2 w-full'>
+              {editName ?
+                <div className='flex items-center gap-2'>
+                  <Button isIconOnly color='danger' onPress={() => { setEditName(false) }}><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                  </svg>
+                  </Button>
+                  <Button isIconOnly color='success'><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                  </svg>
+                  </Button>
+                </div>
+                :
+                <>
+                  <Button isIconOnly onPress={() => { setEditName(true) }}>
+
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+
+                      <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
+                    </svg>
+                  </Button>
+                </>
+              }
+              <Input color='primary' fullWidth isDisabled={!editName} type="text" label={'name'} value={user.userName} onChange={(e) => setNameValue(e.target.value)} />
+
             </div>
-            :
-            <>
-              <Button isIconOnly onPress={() => { setEditName(true) }}>
 
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+            <Divider className="my-4" />
 
-                  <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
-                </svg>
-              </Button>
-            </>
-          }
-          <Input color='primary' fullWidth isDisabled={!editName} type="text" label={'name'} value={nameValue} onChange={(e) => setNameValue(e.target.value)} />
+            <AddressList addressArray={user.address} />
 
-        </div>
+            <CreateAddress />
 
-        <Divider className="my-4" />
+            <Divider className="my-4" />
+            <h3 className='font-bold text-xl capitalize'>🏡 plant i own</h3>
 
-        <div className='flex items-center gap-2 w-full'>
-          <Button isIconOnly color='danger' onPress={onOpen}>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-            </svg>
-          </Button>
-          <Input color='primary' fullWidth isDisabled type="text" label={`1020 Bis chemin de la montagne 38690 le Grand Lemps`} />
-          <Modal placement={"center"} isOpen={isOpen} onOpenChange={onOpenChange}>
-            <ModalContent>{(onClose) => (<>
-              <ModalHeader>Delet this address ?</ModalHeader>
-              <ModalBody>
-                {`1020 bis chemin de la montagne 38690 le Grand Lemps`}
-              </ModalBody>
-              <ModalFooter className="w-full flex items-center justify-between">
-                <Button color="danger" variant="light" onPress={onClose} className="">
-                  Close
-                </Button>
-                <Button color="primary" onClick={() => { console.log('post action ') }}>
-                  Delet my address
-                </Button>
-              </ModalFooter>
-            </>)}
-            </ModalContent>
+            <ListPlant plantOwned={user.plantsOwned} />
 
-          </Modal>
-        </div>
-        <Button fullWidth color='primary'>  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-        </svg>
-          Add new address
-        </Button>
 
-        <Divider className="my-4" />
-        <h3>plant i own</h3>
-        <Card
-          isPressable
-          isBlurred
-          className="border-none bg-background/60 dark:bg-default-100/50 max-w-[610px]"
-          shadow="sm"
-        >
+            <Divider className="my-4" />
+            <h3 className='font-bold text-xl capitalize'> 🍀 plant i guard</h3>
+            <ListPlant plantOwned={user.plantsGuarded} />
 
-          <CardBody>
-            <div className="grid grid-cols-6 md:grid-cols-12 gap-6 md:gap-4 items-center justify-center">
-              <div className="relative col-span-6 md:col-span-4">
-                <Image
-                  alt="Album cover"
-                  className="object-cover"
-                  height={200}
-                  src="https://cdn.pixabay.com/photo/2018/06/28/17/02/water-lily-3504363_1280.jpg"
-                  width={200}
-                />
-              </div>
-
-              <div className="flex flex-col col-span-6 md:col-span-8">
-                <div className="flex justify-between items-start">
-                  <div className="flex flex-col gap-0">
-                    <h3 className="font-semibold text-foreground/90">Lotus</h3>
-                    <p className="text-small text-foreground/80">nom latin de la fleur</p>
-                    <h1 className="text-large font-medium mt-2 flex items-center gap-4">Guardian :  Jane Doe <Avatar src='' /></h1>
-                  </div>
-                </div>
-
-                <div className="flex flex-col mt-3 gap-1">
-                  {/** footer */}
-                  <div className="flex justify-between">
-                    <p>number of comment : </p>
-                    <Chip color='danger'>{`99`}</Chip>
-                  </div>
-                </div>
-
-                <div className="flex w-full items-center justify-center">
-                </div>
-              </div>
-            </div>
-          </CardBody>
-        </Card>
-        <Divider className="my-4" />
-        <h3>plant i guard</h3>
-        <Card
-          isPressable
-          isBlurred
-          className="border-none bg-background/60 dark:bg-default-100/50 max-w-[610px]"
-          shadow="sm"
-        >
-
-          <CardBody>
-            <div className="grid grid-cols-6 md:grid-cols-12 gap-6 md:gap-4 items-center justify-center">
-              <div className="relative col-span-6 md:col-span-4">
-                <Image
-                  alt="Album cover"
-                  className="object-cover"
-                  height={200}
-                  src="https://cdn.pixabay.com/photo/2018/06/28/17/02/water-lily-3504363_1280.jpg"
-                  width={200}
-                />
-              </div>
-
-              <div className="flex flex-col col-span-6 md:col-span-8">
-                <div className="flex justify-between items-start">
-                  <div className="flex flex-col gap-0">
-                    <h3 className="font-semibold text-foreground/90">Lotus</h3>
-                    <p className="text-small text-foreground/80">nom latin de la fleur</p>
-                    <h1 className="text-large font-medium mt-2 flex items-center gap-4">Guardian :  Jane Doe <Avatar src='' /></h1>
-                  </div>
-                </div>
-
-                <div className="flex flex-col mt-3 gap-1">
-                  {/** footer */}
-                  <div className="flex justify-between">
-                    <p>number of comment : </p>
-                    <Chip color='danger'>{`99`}</Chip>
-                  </div>
-                </div>
-
-                <div className="flex w-full items-center justify-center">
-                </div>
-              </div>
-            </div>
-          </CardBody>
-        </Card>
-      </section>
+          </section>
+        </>
+        :
+        <Spinner />}
     </main>
   )
 }

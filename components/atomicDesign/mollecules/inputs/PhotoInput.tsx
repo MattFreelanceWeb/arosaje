@@ -4,7 +4,14 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import Webcam from 'react-webcam';
 
-const PhotoInput = () => {
+type Props = {
+    pictureToSend:string,
+    setPictureToSend:Function
+
+}
+
+function PhotoInput ({pictureToSend, setPictureToSend }: Props) {
+
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [photoFromCamera, setPhotoFromCamera] = useState<string | null>(null);
 
@@ -29,9 +36,10 @@ const PhotoInput = () => {
     };
 
     useEffect(() => {
-        console.log(photoFromCamera)
+        
+        setPictureToSend(photoFromCamera)
 
-    }, [photoFromCamera])
+    }, [photoFromCamera,setPictureToSend])
 
 
     return (

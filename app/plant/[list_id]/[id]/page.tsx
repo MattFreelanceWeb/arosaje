@@ -3,8 +3,8 @@
 import React, { useEffect, useState } from 'react'
 import { Image, Button, Link, Badge, Avatar, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Divider, Input } from '@nextui-org/react'
 import { useParams, useRouter } from 'next/navigation';
+import PhotoInput from '@/components/atomicDesign/mollecules/inputs/PhotoInput';
 const jwt = require("jsonwebtoken")
-
 
 type Props = {}
 
@@ -20,7 +20,7 @@ function Plant_id_page({ }: Props) {
 		addressId: number;
 		createdAt: string;
 		updatedAt: string;
-		comment: any[]; // Type des commentaires à définir
+		comment: any[];
 		owner: {
 			id: number;
 			email: string;
@@ -40,6 +40,8 @@ function Plant_id_page({ }: Props) {
 	const [plants, setPlants] = useState<Plant>()
 	const [comment, setComment] = useState<string>()
 	const [isCommentLoading, setIsCommentLoading] = useState(false)
+
+	const [pictureToSend, setPictureToSend] = useState("")
 
 	const params = useParams()
 
@@ -62,7 +64,7 @@ function Plant_id_page({ }: Props) {
 		setModal2Open(false);
 	};
 
-	const createComment = async (comment: { content: string }) => {
+	const createComment = async (comment: { content: string, byteImage: string }) => {
 
 		setIsCommentLoading(true)
 		try {
@@ -151,12 +153,18 @@ function Plant_id_page({ }: Props) {
 				<section className='w-full h-72 gap-4 sm:w-full sm:h-full bg-white/30 backdrop-blur-xl border-2 rounded-md overflow-y-auto relative'>
 					<div className='absolute top-2 w-full px-4 flex flex-col gap-4'>
 						{plants && plants?.comment?.length > 0 ? plants?.comment.map((item, i) => (
-							<div key={i} className={`text-sm sm:text-base text-center w-full flex items-center justify-center flex-col gap-4 rounded-md  text-white ${item.User.id === plants.ownerId? "bg-green-500" : "bg-black"}`}>
-								<h2> de:{item.User.userName? item.User.userName : item.User.email}</h2>
-								<p className=' '>{item.content}</p>
-								<p> 
-									time: {item.createdAt}
-								</p>
+							<div key={i} className={`text-sm sm:text-base text-center w-full flex items-center justify-center gap-4 rounded-md  text-white p-2 ${item.User.id === plants.ownerId ? "bg-green-500" : "bg-black"}`}>
+								<div className='w-1/2 h-full'>
+									<Image src={item.byteImage} alt='' />
+								</div>
+								<div className='w-1/2 h-full flex flex-col text-start'>
+									<h2> de:{item.User.userName ? item.User.userName : item.User.email}</h2>
+									<p className=' '>{item.content}</p>
+									<p>
+										time: {item.createdAt}
+									</p>
+								</div>
+
 							</div>))
 							:
 							<div className='text-sm sm:text-base text-center w-full h-12 flex items-center justify-center rounded-md'>
@@ -205,11 +213,13 @@ function Plant_id_page({ }: Props) {
 								</ModalHeader>
 								<Divider></Divider>
 								<ModalBody className="flex flex-col items-center w-full justify-center">
-									{/*Fetch commentaires*/}
+
 								</ModalBody>
-								<ModalFooter className="w-full flex items-center">
+								<ModalFooter className="w-full flex flex-col items-center gap-4">
+									<PhotoInput pictureToSend={pictureToSend} setPictureToSend={setPictureToSend} />
 									<Input type='text' label='Ajouter un commentaire...' value={comment} onChange={(e) => { setComment(e.target.value) }} />
-									<Button className='justify-end' color="primary" onClick={() => { createComment({ content: comment as string }), setModal1Open(false), setComment("") }}>
+									<Button className='justify-end' color="primary" onClick={() => { createComment({ content: comment as string, byteImage: pictureToSend }), setModal1Open(false), setComment("") }}>
+									{/* .replace(/^data:image\/jpeg;base64,/, "") */}
 										Publier
 									</Button>
 								</ModalFooter>
