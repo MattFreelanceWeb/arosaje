@@ -59,6 +59,9 @@ export default function HomePage() {
   const [user, setUser] = useState<User>()
   const [isPlantLoading, setIsPlantLoading] = useState(false)
 
+
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
   const createPlant = async (plantData: PlantData) => {
     setIsPlantLoading(true)
     try {
@@ -134,7 +137,7 @@ export default function HomePage() {
 
     fetchUser()
 
-  }, [])
+  }, [onOpenChange])
 
   const Map = useMemo(() => dynamic(
     () => import('@/components/atomicDesign/mollecules/map/Map'),
@@ -144,7 +147,6 @@ export default function HomePage() {
     }
   ), [])
 
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   return (
     <>

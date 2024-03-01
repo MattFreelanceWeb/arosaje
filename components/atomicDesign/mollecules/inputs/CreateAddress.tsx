@@ -14,11 +14,7 @@ function CreateAddress({ }: Props) {
     const [street, setStreet] = useState<string | undefined>()
     const [postalCode, setPostalCode] = useState<number | undefined>()
     const [city, setCity] = useState<string | undefined>()
-    const [latitude, setLatitude] = useState<number | undefined>()
-    const [longitude, setLongitude] = useState<number | undefined>()
 
-
-    const [adressSelected, setAdressSelected] = useState<[latitude: number, longitude: number]>()
 
     const fetchLatLngFromGvt = async (addressObj: { number: number, street: string, postalCode: number, city: string }) => {
 
@@ -32,8 +28,7 @@ function CreateAddress({ }: Props) {
             const reponse = await fetch(`https://api-adresse.data.gouv.fr/search/?q=${queryString}`, { method: "GET" });
             const data = await reponse.json()
             const latLng = data.features[0].geometry.coordinates
-            setLatitude(latLng[0])
-            setLongitude(latLng[1])
+
             return latLng
 
         } catch (error: any) {
@@ -43,53 +38,51 @@ function CreateAddress({ }: Props) {
 
     const createAddress = async (address: { number: number, street: string, postalCode: number, city: string }) => {
 
-        await fetchLatLngFromGvt({
+      const latLng =  await fetchLatLngFromGvt({
             number: number as number,
             street: street as string,
             postalCode: postalCode as number,
             city: city as string,
         })
-        if (!!latitude && !!longitude) {
-            try {
-                const token = localStorage.getItem("token")
-                const decodedToken = await jwt.decode(token, { complete: true });
 
-                const userId = await decodedToken.payload.userId
+        try {
+            const token = localStorage.getItem("token")
+            const decodedToken = await jwt.decode(token, { complete: true });
 
-                const headers = {
-                    Authorization: `Bearer ${token}`,
-                    'Content-Type': 'application/json',
-                };
+            const userId = await decodedToken.payload.userId
 
-                const response = await fetch(`http://localhost:8080/api/address/${userId}`, {
-                    method: 'POST',
-                    headers: headers,
-                    body: JSON.stringify({ ...address, lat: latitude, lng: longitude , country:"france"}),
-                });
+            const headers = {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            };
 
-                if (!response.ok) {
-                    throw new Error('Erreur lors de la création de la plante');
-                }
+            const response = await fetch(`http://localhost:8080/api/address/${userId}`, {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify({ ...address, lat: latLng[0], lng: latLng[1], country: "france" }),
+            });
 
-                const data = await response.json();
-                return data;
-            } catch (error) {
-                console.error(error);
-                throw new Error("Une erreur est survenue lors de la création de l'adresse");
+            if (!response.ok) {
+                throw new Error('Erreur lors de la création de la plante');
             }
+
+            const data = await response.json();
+            
+            setNumber(undefined)
+            setCity("")
+            setStreet("")
+            setPostalCode(undefined)
+
+            return data;
+        } catch (error) {
+            console.error(error);
+            throw new Error("Une erreur est survenue lors de la création de l'adresse");
         }
+
 
     };
 
-    // function to clear modal onclose
-    const clear = () => {
-        setNumber(undefined)
-        setCity(undefined)
-        setStreet(undefined)
-        setPostalCode(undefined)
-        setLatitude(undefined)
-        setLongitude(undefined)
-    }
+
 
 
     return (

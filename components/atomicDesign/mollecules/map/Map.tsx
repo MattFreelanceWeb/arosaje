@@ -83,7 +83,7 @@ export default function MyMap(props: any) {
         };
 
         fetchPlants();
-    }, [position]);
+    }, [position,router]);
 
 
 
