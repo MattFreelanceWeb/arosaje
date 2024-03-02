@@ -39,6 +39,7 @@ function Plant_id_page({ }: Props) {
 
 	const [plants, setPlants] = useState<Plant>()
 	const [comment, setComment] = useState<string>()
+	const [askValue, setAskValue] = useState<string>()
 	const [isCommentLoading, setIsCommentLoading] = useState(false)
 
 	const [pictureToSend, setPictureToSend] = useState("")
@@ -93,6 +94,39 @@ function Plant_id_page({ }: Props) {
 		} catch (error) {
 			console.error(error);
 			throw new Error('Une erreur est survenue lors de la création de la plante');
+		} finally {
+			setIsCommentLoading(false)
+		}
+	}
+
+	const deleteComment = async (commentId:number) => {
+		setIsCommentLoading(true)
+		try {
+			const token = localStorage.getItem("token")
+			const decodedToken = await jwt.decode(token, { complete: true });
+
+			const userId = await decodedToken.payload.userId
+
+			const headers = {
+				Authorization: `Bearer ${token}`,
+				'Content-Type': 'application/json',
+			};
+
+			const response = await fetch(`http://localhost:8080/api/comment/${commentId}`, {
+				method: 'DELETE',
+				headers: headers,
+				body: JSON.stringify(comment),
+			});
+
+			if (!response.ok) {
+				throw new Error('Erreur lors de la suppression du commentaire');
+			}
+
+			const data = await response.json();
+			return data;
+		} catch (error) {
+			console.error(error);
+			throw new Error('Une erreur est survenue lors de la suppression du commentaire');
 		} finally {
 			setIsCommentLoading(false)
 		}
@@ -153,7 +187,8 @@ function Plant_id_page({ }: Props) {
 				<section className='w-full h-72 gap-4 sm:w-full sm:h-full bg-white/30 backdrop-blur-xl border-2 rounded-md overflow-y-auto relative'>
 					<div className='absolute top-2 w-full px-4 flex flex-col gap-4'>
 						{plants && plants?.comment?.length > 0 ? plants?.comment.map((item, i) => (
-							<div key={i} className={`text-sm sm:text-base text-center w-full flex items-center justify-center gap-4 rounded-md  text-white p-2 ${item.User.id === plants.ownerId ? "bg-green-500" : "bg-black"}`}>
+							<div key={item.id}
+							 className={`text-sm sm:text-base text-center w-full flex items-center justify-center gap-4 rounded-md  text-white p-2 relative ${item.User.id === plants.ownerId ? "bg-green-500" : "bg-black"}`}>
 								<div className='w-1/2 h-full'>
 									<Image src={item.byteImage} alt='' />
 								</div>
@@ -164,6 +199,9 @@ function Plant_id_page({ }: Props) {
 										time: {item.createdAt}
 									</p>
 								</div>
+								<button className='absolute top-2 right-2 text-xs w-5 h-5 p-2 flex items-center justify-center border-2 rounded-full' onClick={()=>deleteComment(item.id)}>
+									<span className='-translate-y-[1px]'>x</span>
+								</button>
 
 							</div>))
 							:
@@ -172,7 +210,7 @@ function Plant_id_page({ }: Props) {
 							</div>}
 					</div>
 					{/**not yet implemented */}
-					{/* <div className='flex absolute bottom-2 left-1'>
+					<div className='flex absolute bottom-2 left-1'>
 						<Button onClick={() => openModal(2)} className='bg-white h-[60px]'>
 							<Image
 							src={'https://static-00.iconduck.com/assets.00/question-mark-circle-outline-icon-512x512-vxeroxyp.png'}
@@ -182,7 +220,7 @@ function Plant_id_page({ }: Props) {
 							className='w-10 object-cover h-[40px]' />
 						</Button>
 						<h1></h1>
-					</div> */}
+					</div>
 
 				</section>
 				<div className=' absolute bottom-1 right-3'>
@@ -229,7 +267,7 @@ function Plant_id_page({ }: Props) {
 				</Modal>
 			</section>
 			{/**  ask to a botanist section  -- not yet implemented*/}
-			{/* <section>
+			<section>
 				<Modal placement={"center"} isOpen={modal2Open} onClose={closeAllModals} className={`max-h-[80%] overflow-y-auto ${modal2Open ? 'z-[1000]' : '-z-10'}`}>
 					<ModalContent>
 						{(onClose) => (
@@ -239,10 +277,10 @@ function Plant_id_page({ }: Props) {
 							</ModalHeader>
 							<Divider></Divider>
 							<ModalBody className="flex flex-col items-center w-full justify-center">
-								<Input type='text' label='Précisez votre demande...' />
+								<Input type='text' label='Précisez votre demande...' value={askValue} onChange={(e)=>setAskValue(e.target.value)} />
 							</ModalBody>
 							<ModalFooter className="w-full flex items-center justify-center">
-								<Button color="primary" onClick={() => { console.log('Commentaire publié') }}>
+								<Button color="primary" onClick={() => { console.log(`function to ask a botanist with an email with the request ${askValue}`) ,onClose() }}>
 									Envoyer
 								</Button>
 							</ModalFooter>
@@ -250,7 +288,7 @@ function Plant_id_page({ }: Props) {
 						)}
 					</ModalContent>
 				</Modal>
-			</section> */}
+			</section>
 		</main>
 	)
 }
