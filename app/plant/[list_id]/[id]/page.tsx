@@ -99,7 +99,7 @@ function Plant_id_page({ }: Props) {
 		}
 	}
 
-	const deleteComment = async (commentId:number) => {
+	const deleteComment = async (commentId: number) => {
 		setIsCommentLoading(true)
 		try {
 			const token = localStorage.getItem("token")
@@ -188,7 +188,7 @@ function Plant_id_page({ }: Props) {
 					<div className='absolute top-2 w-full px-4 flex flex-col gap-4'>
 						{plants && plants?.comment?.length > 0 ? plants?.comment.map((item, i) => (
 							<div key={item.id}
-							 className={`text-sm sm:text-base text-center w-full flex items-center justify-center gap-4 rounded-md  text-white p-2 relative ${item.User.id === plants.ownerId ? "bg-green-500" : "bg-black"}`}>
+								className={`text-sm sm:text-base text-center w-full flex items-center justify-center gap-4 rounded-md  text-white p-2 relative ${item.User.id === plants.ownerId ? "bg-green-500" : "bg-black"}`}>
 								<div className='w-1/2 h-full'>
 									<Image src={item.byteImage} alt='' />
 								</div>
@@ -199,7 +199,7 @@ function Plant_id_page({ }: Props) {
 										time: {item.createdAt}
 									</p>
 								</div>
-								<button className='absolute top-2 right-2 text-xs w-5 h-5 p-2 flex items-center justify-center border-2 rounded-full' onClick={()=>deleteComment(item.id)}>
+								<button className='absolute top-2 right-2 text-xs w-5 h-5 p-2 flex items-center justify-center border-2 rounded-full' onClick={() => deleteComment(item.id)}>
 									<span className='-translate-y-[1px]'>x</span>
 								</button>
 
@@ -209,20 +209,21 @@ function Plant_id_page({ }: Props) {
 								no comment here
 							</div>}
 					</div>
-					{/**not yet implemented */}
-					<div className='flex absolute bottom-2 left-1'>
-						<Button onClick={() => openModal(2)} className='bg-white h-[60px]'>
-							<Image
-							src={'https://static-00.iconduck.com/assets.00/question-mark-circle-outline-icon-512x512-vxeroxyp.png'}
 
-							alt='' 
-							width='100%'
-							className='w-10 object-cover h-[40px]' />
-						</Button>
-						<h1></h1>
-					</div>
 
 				</section>
+				{/**not yet implemented */}
+				<div className=' absolute bottom-2 left-1 z-10'>
+					<Button onClick={() => openModal(2)} className='bg-white h-[60px]'>
+						<Image
+							src={'https://static-00.iconduck.com/assets.00/question-mark-circle-outline-icon-512x512-vxeroxyp.png'}
+
+							alt=''
+							width='100%'
+							className='w-10 object-cover h-[40px]' />
+					</Button>
+					<h1></h1>
+				</div>
 				<div className=' absolute bottom-1 right-3'>
 					<Button onClick={() => openModal(1)} className='bg-white h-[60px]'>
 						<Badge color="primary" content={plants?.comment.length} shape="circle">
@@ -257,7 +258,7 @@ function Plant_id_page({ }: Props) {
 									<PhotoInput pictureToSend={pictureToSend} setPictureToSend={setPictureToSend} />
 									<Input type='text' label='Ajouter un commentaire...' value={comment} onChange={(e) => { setComment(e.target.value) }} />
 									<Button className='justify-end' color="primary" onClick={() => { createComment({ content: comment as string, byteImage: pictureToSend }), setModal1Open(false), setComment("") }}>
-									{/* .replace(/^data:image\/jpeg;base64,/, "") */}
+										{/* .replace(/^data:image\/jpeg;base64,/, "") */}
 										Publier
 									</Button>
 								</ModalFooter>
@@ -271,20 +272,20 @@ function Plant_id_page({ }: Props) {
 				<Modal placement={"center"} isOpen={modal2Open} onClose={closeAllModals} className={`max-h-[80%] overflow-y-auto ${modal2Open ? 'z-[1000]' : '-z-10'}`}>
 					<ModalContent>
 						{(onClose) => (
-						<>
-							<ModalHeader className="flex flex-col gap-1">
-								Effectuer une demande
-							</ModalHeader>
-							<Divider></Divider>
-							<ModalBody className="flex flex-col items-center w-full justify-center">
-								<Input type='text' label='Précisez votre demande...' value={askValue} onChange={(e)=>setAskValue(e.target.value)} />
-							</ModalBody>
-							<ModalFooter className="w-full flex items-center justify-center">
-								<Button color="primary" onClick={() => { console.log(`function to ask a botanist with an email with the request ${askValue}`) ,onClose() }}>
-									Envoyer
-								</Button>
-							</ModalFooter>
-						</>
+							<>
+								<ModalHeader className="flex flex-col gap-1">
+									Effectuer une demande
+								</ModalHeader>
+								<Divider></Divider>
+								<ModalBody className="flex flex-col items-center w-full justify-center">
+									<Input type='text' label='Précisez votre demande...' value={askValue} onChange={(e) => setAskValue(e.target.value)} />
+								</ModalBody>
+								<ModalFooter className="w-full flex items-center justify-center">
+									<Button color="primary" onClick={() => { console.log(`function to ask a botanist with an email with the request ${askValue}`), onClose() }}>
+										Envoyer
+									</Button>
+								</ModalFooter>
+							</>
 						)}
 					</ModalContent>
 				</Modal>
