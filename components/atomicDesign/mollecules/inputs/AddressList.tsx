@@ -3,6 +3,7 @@
 import { Button } from '@nextui-org/button'
 import { Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from '@nextui-org/react'
 import React, { useState } from 'react'
+import CreateAddress from './CreateAddress'
 const jwt = require("jsonwebtoken")
 
 
@@ -20,19 +21,22 @@ interface Address {
     updatedAt: string;
 }
 
-type Props = { addressArray: Address[] }
+type Props = { addressArray: Address[], toggleAddressList: boolean, setToggleAddressList: Function }
 
-function AddressList({ addressArray }: Props) {
+function AddressList({ addressArray, toggleAddressList, setToggleAddressList }: Props) {
+
+    const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
 
     const [error, setError] = useState()
 
     const handleDeleteAddress = async (addressId: number) => {
         try {
             const token = localStorage.getItem("token")
-    
+
             const headers = {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
             };
 
             const response = await fetch(`http://localhost:8080/api/address/${addressId}`, {
@@ -48,7 +52,6 @@ function AddressList({ addressArray }: Props) {
             console.log(error)
         }
     }
-    const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
     return (
         <>
@@ -70,7 +73,7 @@ function AddressList({ addressArray }: Props) {
                                 <Button color="danger" variant="light" onPress={onClose} className="">
                                     Close
                                 </Button>
-                                <Button color="primary" onClick={() => { handleDeleteAddress(item.id) }}>
+                                <Button color="primary" onClick={() => { handleDeleteAddress(item.id), setToggleAddressList(!toggleAddressList), onClose() }}>
                                     Delet my address
                                 </Button>
                             </ModalFooter>

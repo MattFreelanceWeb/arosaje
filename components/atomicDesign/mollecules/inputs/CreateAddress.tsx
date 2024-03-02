@@ -1,6 +1,6 @@
 import { Button } from '@nextui-org/button'
 import { Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Spinner, useDisclosure } from '@nextui-org/react'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 const jwt = require("jsonwebtoken")
 
 
@@ -22,7 +22,6 @@ function CreateAddress({ }: Props) {
         const valeurs = Object.values(addressObj).map(value => String(value).replace(/ /g, "+"));
         const queryString = valeurs.join("+")
 
-        console.log(queryString)
 
         try {
             const reponse = await fetch(`https://api-adresse.data.gouv.fr/search/?q=${queryString}`, { method: "GET" });
@@ -38,7 +37,7 @@ function CreateAddress({ }: Props) {
 
     const createAddress = async (address: { number: number, street: string, postalCode: number, city: string }) => {
 
-      const latLng =  await fetchLatLngFromGvt({
+        const latLng = await fetchLatLngFromGvt({
             number: number as number,
             street: street as string,
             postalCode: postalCode as number,
@@ -67,11 +66,6 @@ function CreateAddress({ }: Props) {
             }
 
             const data = await response.json();
-            
-            setNumber(undefined)
-            setCity("")
-            setStreet("")
-            setPostalCode(undefined)
 
             return data;
         } catch (error) {
@@ -79,8 +73,7 @@ function CreateAddress({ }: Props) {
             throw new Error("Une erreur est survenue lors de la création de l'adresse");
         }
 
-
-    };
+    };   
 
 
 
@@ -117,7 +110,9 @@ function CreateAddress({ }: Props) {
                                             street: street as string,
                                             postalCode: postalCode as number,
                                             city: city as string,
-                                        })
+                                        }),
+                                    onClose()
+
                                 }}>
                                     add a new address
                                 </Button>

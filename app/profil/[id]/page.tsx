@@ -54,7 +54,7 @@ function Profile_ID_page({ }: Props) {
   const [editName, setEditName] = useState(false)
   const [nameValue, setNameValue] = useState('Jhon Doe')
   const [user, setUser] = useState<User>()
-
+  const [toggleAddressList, setToggleAddressList] = useState(false)
 
 
   useEffect(() => {
@@ -97,12 +97,12 @@ function Profile_ID_page({ }: Props) {
 
     fetchUser()
 
-  }, [])
+  }, [toggleAddressList])
 
 
 
 
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
 
 
   return (
@@ -152,7 +152,7 @@ function Profile_ID_page({ }: Props) {
 
             <Divider className="my-4" />
 
-            <AddressList addressArray={user.address} />
+            <AddressList addressArray={user.address}  toggleAddressList={toggleAddressList} setToggleAddressList={setToggleAddressList}/>
 
             <CreateAddress />
 

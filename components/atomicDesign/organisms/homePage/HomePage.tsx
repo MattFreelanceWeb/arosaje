@@ -198,7 +198,7 @@ export default function HomePage() {
                   <Button color="danger" variant="light" onPress={onClose} className="">
                     Close
                   </Button>
-                  <Button isDisabled={!(!!plantSelected && !!addressSelected)} color="primary" onClick={() => { createPlant({ common_name: plantSelected?.common_name, scientific_name: plantSelected?.scientific_name, image_url: plantSelected?.image_url, addressId: addressSelected?.id }) }}>
+                  <Button isDisabled={!(!!plantSelected && !!addressSelected)} color="primary" onClick={() => { createPlant({ common_name: plantSelected?.common_name, scientific_name: plantSelected?.scientific_name, image_url: plantSelected?.image_url, addressId: addressSelected?.id }), onClose() }}>
                     Post my plant
                   </Button>
                 </ModalFooter>
