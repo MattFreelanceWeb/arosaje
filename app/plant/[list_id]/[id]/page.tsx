@@ -199,7 +199,9 @@ function Plant_id_page({ }: Props) {
 										time: {item.createdAt}
 									</p>
 								</div>
-								<button className='absolute top-2 right-2 text-xs w-5 h-5 p-2 flex items-center justify-center border-2 rounded-full' onClick={() => deleteComment(item.id)}>
+
+								{/** delete comment */}
+								<button className='absolute top-2 right-2 text-xs w-5 h-5 p-2 flex items-center justify-center border-2 rounded-full' onClick={() =>{ deleteComment(item.id)} }>
 									<span className='-translate-y-[1px]'>x</span>
 								</button>
 

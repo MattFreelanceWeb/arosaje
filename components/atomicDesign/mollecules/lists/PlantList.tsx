@@ -1,6 +1,6 @@
 'use client'
 
-import { Button, Card, CardBody, Image, Avatar, Badge, Link } from "@nextui-org/react"
+import { Button, Card, CardBody, Image, Avatar, Badge, Link, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from "@nextui-org/react"
 import { useParams, useRouter } from "next/navigation";
 
 import { useEffect, useState } from "react";
@@ -32,35 +32,99 @@ interface Plant {
 function PlantList({ }: Props) {
 
     const [plants, setPlants] = useState<Plant[]>()
+    const [isGuarded, setIsGuarded] = useState(false)
 
     const params = useParams()
 
     const router = useRouter()
 
+    const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
+    const addguadian = async (plants: Plant[],) => {
+
+        const token = localStorage.getItem('token')
+
+        const headers = {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        };
+
+        plants.forEach(async item => {
+            try {
+                const url = `http://localhost:8080/api/plant/${item.id}/addguardian`
+
+                const response = await fetch(url, {
+                    method: 'PUT',
+                    headers: headers,
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Erreur lors de l'ajout d'un gardien pour la plante ${item.id}`);
+                }
+
+                const data = await response.json();
+                return data;
+
+            } catch (error) {
+                console.error(error);
+                throw new Error(`Erreur lors de l'ajout d'un gardien pour la plante ${item.id}`);
+            }
+        });
+
+    }
+
+    const removeGuadian = async (plants: Plant[],) => {
+
+        const token = localStorage.getItem('token')
+
+        const headers = {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        };
+
+        plants.forEach(async item => {
+            try {
+                const url = `http://localhost:8080/api/plant/${item.id}/removeGuardian`
+
+                const response = await fetch(url, {
+                    method: 'PUT',
+                    headers: headers,
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Erreur lors de l'ajout d'un gardien pour la plante ${item.id}`);
+                }
+
+                const data = await response.json();
+                return data;
+
+            } catch (error) {
+                console.error(error);
+                throw new Error(`Erreur lors de l'ajout d'un gardien pour la plante ${item.id}`);
+            }
+        });
+
+    }
+
+
     useEffect(() => {
 
         const token = localStorage.getItem('token')
 
-        const decodedQueryString = decodeURIComponent(params.list_id as string); // Décoder la chaîne de requête
+        const decodedQueryString = decodeURIComponent(params.list_id as string);
 
-        // Séparer les paramètres
         const paramsToGet = decodedQueryString.split("&");
 
-        // Initialiser un objet pour stocker les paramètres
         const queryParams: any = {};
 
-        // Boucler à travers les paramètres et les stocker dans l'objet queryParams
         paramsToGet.forEach(param => {
             const [key, value] = param.split("=");
-            queryParams[key] = parseInt(value); // Convertir la valeur en nombre si nécessaire
+            queryParams[key] = parseInt(value);
         });
 
-        // Maintenant, vous pouvez accéder aux valeurs de userId et addressId comme ceci :
-        const userId = queryParams["userId"]; // 3
-        const addressId = queryParams["addressId"]; // 1
+        const userId = queryParams["userId"];
+        const addressId = queryParams["addressId"];
 
-
-        //     //TODO: remplacer le token pour l'obtenir de manière dynamique
 
         const fetchPlants = async () => {
             try {
@@ -85,9 +149,6 @@ function PlantList({ }: Props) {
                 }
                 const data = await response.json();
 
-                //log for dev mode
-                console.log(data.data)
-
                 setPlants(data.data);
             } catch (error) {
                 console.error(error);
@@ -95,7 +156,16 @@ function PlantList({ }: Props) {
         }
 
         fetchPlants();
-    }, [params.list_id, router]);
+    }, [params.list_id, router, onOpenChange]);
+
+
+
+    useEffect(() => {
+
+        plants && setIsGuarded(!!plants[0].guardianId)
+
+    }, [plants])
+
 
 
     return (
@@ -109,9 +179,39 @@ function PlantList({ }: Props) {
                         <h2 className="font-bold text-2xl"><span className="text-sm">Plante de :</span> {plants[0].owner.userName ? plants[0].owner.userName : plants[0].owner.email}</h2>
                     </div>
                     <div>
-                        <Button className="capitalize" color="success">garder</Button>
+                        <Button className="capitalize" color={isGuarded ? "danger" : "success"} onClick={() => { onOpen() }}>{isGuarded ? "deliver" : "guard"}</Button>
                     </div>
-                    </>
+                    <Modal placement={"center"} isOpen={isOpen} onOpenChange={onOpenChange} className={`max-h-[80%] overflow-y-auto ${isOpen ? 'z-[1000]' : '-z-10'}`}>
+                        <ModalContent>
+                            {(onClose) => (
+                                <>
+                                    <ModalHeader className="flex flex-col gap-1">{isGuarded ? "Deliver" : "Guard"} plants 🌱</ModalHeader>
+
+                                    <ModalBody className="flex flex-col items-center w-full justify-center">
+
+                                        <p>you are about to {isGuarded ? "deliver" : "guard"} those plants, do you confirm ?</p>
+
+                                    </ModalBody>
+                                    <ModalFooter className="w-full flex items-center justify-between">
+                                        <Button color="danger" variant="light" onPress={onClose} className="">
+                                            Close
+                                        </Button>
+                                        {isGuarded ?
+                                            <Button color="primary" onClick={() => { removeGuadian(plants), onClose() }}>
+                                                Deliver
+                                            </Button>
+                                            :
+                                            <Button color="primary" onClick={() => { addguadian(plants), onClose() }}>
+                                                Guard
+                                            </Button>
+                                        }
+
+                                    </ModalFooter>
+                                </>
+                            )}
+                        </ModalContent>
+                    </Modal>
+                </>
                 }
             </div>
 
