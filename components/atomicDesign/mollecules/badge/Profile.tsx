@@ -29,7 +29,7 @@ function Profile({ userId, imgSrc,userName}: Props) {
                 <PopoverContent>
                     <div className="flex flex-col items-center gap-4 p-2">
                         <Button as={Link} href={`/profil/${userId}`} className="bg-transparent">Mon profil</Button>
-                        <Button onClick={()=>{signOut()}}>Se déconnecter</Button>
+                        <Button color="danger" onClick={()=>{signOut()}}>Se déconnecter</Button>
                     </div>
                 </PopoverContent>
             </Popover>

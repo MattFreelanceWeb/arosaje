@@ -2,8 +2,11 @@
 
 
 import { Button, Input } from '@nextui-org/react'
+import Image from 'next/image'
 import { useRouter, usePathname, useSearchParams } from 'next/navigation'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+
+import Logo from "@/res/logo.webp"
 
 type Props = {}
 
@@ -14,6 +17,7 @@ function LoginSignup({ }: Props) {
     const [passwordSignup, setPasswordSignup] = useState("")
     const [confirmPasswordSignup, setConfirmPasswordSignup] = useState("")
     const [validSignup, setValidSignup] = useState(false)
+    const [signupDisable, setSignupDisable] = useState(true)
 
 
     const [emailLogin, setEmailLogin] = useState("")
@@ -65,27 +69,47 @@ function LoginSignup({ }: Props) {
 
             const responseData = await response.json();
             console.log('User logged in successfully:', responseData);
-            const token = responseData.token; // Supposons que le token se trouve dans la propriété "token" de la réponse
+            const token = responseData.token;
             localStorage.setItem('token', token);
             router.push("/")
-            return responseData; // Si nécessaire
+            return responseData;
         } catch (error) {
             console.error('Error logging in:', error);
-            throw error; // Gérer l'erreur de manière appropriée
+            throw error;
         }
     };
+
+    useEffect(() => {
+
+        if (passwordSignup.length < 2) {
+            setSignupDisable(true)
+        } else if (passwordSignup !== confirmPasswordSignup) {
+            setSignupDisable(true)
+        } else {
+            setSignupDisable(false)
+        }
+
+
+    }, [passwordSignup, confirmPasswordSignup])
+
 
 
     return (
         <>
+            <div className='absolute top-0 left-0 w-full h-full '>
+                <Image src={"https://cdn.pixabay.com/photo/2016/11/19/11/11/hands-1838658_960_720.jpg"} alt="" className='object-cover h-full w-full' width={1280} height={956} />
+            </div>
+            <div className='absolute top-8 w-52 h-52 rounded-md z-10 '>
+                <Image src={Logo} alt='' />
+            </div>
             {connection === 'signup' && (
-                <form className='border-2 border-black rounded-md w-80 flex flex-col gap-8 md:w-3/4'>
+                <form className=' rounded-md w-80 flex flex-col gap-8 md:w-3/4 p-8 backdrop-blur-xl bg-white/30 max-w-[700px]'>
                     <Input type="email" label="Email" value={emailSignup} onChange={(e) => { setEmailSignup(e.target.value) }} />
                     <Input type="password" label="password" value={passwordSignup} onChange={(e) => { setPasswordSignup(e.target.value) }} />
                     <Input type="password" label="Confirm password" value={confirmPasswordSignup} onChange={(e) => { setConfirmPasswordSignup(e.target.value) }} />
-                    <div className='w-full flex items-center justify-around'>
-                        <Button color='default' onClick={() => { setConnection('login') }}> pour login </Button>
-                        <Button color='primary' onClick={() => {
+                    <div className='w-full flex items-center justify-around gap-8'>
+                        <Button onClick={() => { setConnection('login') }} variant='shadow'> I have an account </Button>
+                        <Button color='primary' isDisabled={signupDisable} onClick={() => {
                             signUp({ email: emailSignup, password: passwordSignup }).then((responseData) => {
                                 setValidSignup(true)
                                 setConnection("login")
@@ -93,32 +117,34 @@ function LoginSignup({ }: Props) {
                                 .catch((error) => {
                                     setValidSignup(false)
                                 });
-                        }}> Click </Button>
+                        }}> Sign-up </Button>
                     </div>
                 </form>
             )}
             {connection === 'login' && (
                 <>
-                    <h2>{validSignup && "bravo votre compte est créé, vous pouvez à présent vous connecter"}</h2>
-                    <form className='border-2 border-black rounded-md w-80 flex flex-col gap-8 md:w-3/4'>
+
+
+                    <form className='rounded-md w-80 flex flex-col gap-8 md:w-3/4 p-8 bg-white/30 backdrop-blur-xl max-w-[700px]'>
+                        <h2 className='text-white'>{validSignup && "bravo votre compte est créé, vous pouvez à présent vous connecter"}</h2>
                         <Input type="email" label="Email" value={emailLogin} onChange={(e) => { setEmailLogin(e.target.value) }} />
                         <Input type="password" label="password" value={passwordLogin} onChange={(e) => { setPasswordLogin(e.target.value) }} />
 
                         <div className='w-full flex items-center justify-around'>
                             <Button
-                                color='default'
+                                variant='ghost'
                                 onClick={() => { setConnection('signup') }}>
-                                pour signup
+                                I need an account
                             </Button>
-                            <Button color='primary' onClick={() => {
+                            <Button isDisabled={!(emailLogin.length>0) && !(passwordLogin.length>0)} color='primary' onClick={() => {
                                 login({ email: emailLogin, password: passwordLogin }).then((responseData) => {
-                                    // Traiter la réponse si nécessaire
+
 
                                 })
-                                .catch((error) => {
-                                    // Gérer les erreurs de connexion
-                                });
-                            }}>Click</Button>
+                                    .catch((error) => {
+
+                                    });
+                            }}>Log-in</Button>
                         </div>
                     </form>
                 </>
