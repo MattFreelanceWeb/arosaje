@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  arosaje:
+    image: arosaje
+    ports:
+      - "3000:3000"
+    volumes:
+      - /app/logs
+    command: npm run dev
+
+  express:
+    image: arosajebdd
+    ports:
+      - "8080:8080"
+    volumes:
+      - /app/logs
+    command: npm run dev
