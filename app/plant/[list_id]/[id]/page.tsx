@@ -239,7 +239,7 @@ function Plant_id_page({ }: Props) {
 				</div>
 			</div>
 
-			<Link href='/profil/id' className='flex absolute bottom-16 items-center sm:bottom-4'>
+			<Link href={`/profil/${plants?.owner.id}`} className='flex absolute bottom-16 items-center sm:bottom-4'>
 				<Avatar src='' />
 				<h1 className='pl-2'>{plants?.owner.email}</h1>
 			</Link>
