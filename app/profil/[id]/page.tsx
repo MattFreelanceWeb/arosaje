@@ -7,7 +7,7 @@ import ListPlantOwned from '@/components/atomicDesign/mollecules/lists/ListPlant
 import { Avatar, Button, Card, CardBody, Chip, Divider, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Spinner, useDisclosure } from '@nextui-org/react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 const jwt = require("jsonwebtoken")
 
 import React, { useEffect, useState } from 'react'
@@ -58,6 +58,8 @@ function Profile_ID_page({ }: Props) {
   const [toggleAddressList, setToggleAddressList] = useState(false)
 
   const router = useRouter()
+  const params = useParams()
+
 
   useEffect(() => {
 
@@ -76,7 +78,7 @@ function Profile_ID_page({ }: Props) {
           "Content-Type": "application/json",
         };
 
-        const url = `http://localhost:8080/api/user/${userId}`
+        const url = `http://localhost:8080/api/user/${params.id}`
 
         const response = await fetch(url, {
           method: "GET",
