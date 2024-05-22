@@ -53,7 +53,7 @@ function Profile_ID_page({ }: Props) {
   }
 
   const [editName, setEditName] = useState(false)
-  const [nameValue, setNameValue] = useState('Jhon Doe')
+  const [nameValue, setNameValue] = useState('')
   const [user, setUser] = useState<User>()
   const [toggleAddressList, setToggleAddressList] = useState(false)
 
@@ -130,13 +130,11 @@ function Profile_ID_page({ }: Props) {
           </section>
           <section className='mt-10 w-full flex flex-col items-center justify-center gap-4 max-w-96 bg-white/30 backdrop-blur-xl border-2 rounded-md p-4'>
             <div className='flex items-center gap-2 w-full'>
+            <h2>Name</h2>
+            <Input color='primary' fullWidth isDisabled={!editName} type="text" value={user.userName ? user.userName : nameValue} onChange={(e) => setNameValue(e.target.value)} />
               {editName ?
                 <div className='flex items-center gap-2'>
-                  <Button isIconOnly color='danger' onPress={() => { setEditName(false) }}><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-                  </svg>
-                  </Button>
-                  <Button isIconOnly color='success'><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                  <Button isIconOnly color='success' onPress={() => { setEditName(false) }}><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                     <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
                   </svg>
                   </Button>
@@ -152,8 +150,6 @@ function Profile_ID_page({ }: Props) {
                   </Button>
                 </>
               }
-              <Input color='primary' fullWidth isDisabled={!editName} type="text" label={'name'} value={user.userName} onChange={(e) => setNameValue(e.target.value)} />
-
             </div>
 
             <Divider className="my-4" />
