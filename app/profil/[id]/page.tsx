@@ -7,6 +7,7 @@ import ListPlantOwned from '@/components/atomicDesign/mollecules/lists/ListPlant
 import { Avatar, Button, Card, CardBody, Chip, Divider, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Spinner, useDisclosure } from '@nextui-org/react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 const jwt = require("jsonwebtoken")
 
 import React, { useEffect, useState } from 'react'
@@ -56,6 +57,7 @@ function Profile_ID_page({ }: Props) {
   const [user, setUser] = useState<User>()
   const [toggleAddressList, setToggleAddressList] = useState(false)
 
+  const router = useRouter()
 
   useEffect(() => {
 
@@ -81,6 +83,10 @@ function Profile_ID_page({ }: Props) {
           headers: headers,
         });
         if (!response.ok) {
+          if(response.status === 403){
+            localStorage.removeItem('token')
+            router.push("/connection")
+        }
           console.log(response)
           throw new Error("Erreur lors de la récupération des données des plantes");
         }
@@ -97,7 +103,7 @@ function Profile_ID_page({ }: Props) {
 
     fetchUser()
 
-  }, [toggleAddressList])
+  }, [toggleAddressList, router])
 
 
 
