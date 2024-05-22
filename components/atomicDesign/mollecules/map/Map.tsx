@@ -10,6 +10,7 @@ import { LatLngExpression } from "leaflet"
 import { Avatar, Button, Card, Chip, Link } from "@nextui-org/react"
 import { Router } from "next/router"
 import { useRouter } from "next/navigation"
+import { randomUUID } from "crypto"
 
 export default function MyMap(props: any) {
 
@@ -106,7 +107,7 @@ export default function MyMap(props: any) {
                             <>
                                 {plants.map((plant) => (
 
-                                    <Marker key={plant.id} position={[plant.address.lat, plant.address.lng]} riseOnHover >
+                                    <Marker key={crypto.randomUUID()} position={[plant.address.lat, plant.address.lng]} riseOnHover >
 
                                         <Popup className="">
                                             <Card isPressable as={Link} href={`/plant/userId=${plant.userId}&addressId=${plant.addressId}`} className="w-36 h-36 flex flex-col items-center justify-center gap-1 p-2">
