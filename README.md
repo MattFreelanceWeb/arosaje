@@ -3,8 +3,14 @@
 # AROSAJE
 
 ## Description
+Arosaje est une application permettant aux utilisateurs de faire garder leurs plantes par des botanistes. L'application permet le partage de photos des plantes à garder et offre des conseils d'entretien fournis par des professionnels.
 
-This project is an application allowing users to have their plants looked after by botanists. The application allows the sharing of photos of plants to keep and offers care advice provided by professionals.
+## Fonctionnalités
+- **Affichage de plantes sur une carte :** Visualisez les plantes disponibles pour le gardiennage sur une carte interactive.
+- **Chat intégré avec option photo :** Communiquez directement avec les utilisateurs et les botanistes via un chat intégré, avec la possibilité de partager des photos.
+- **Demande de conseils :** Obtenez des conseils d'entretien personnalisés pour vos plantes.
+- **Ajout de plantes à faire garder :** Ajoutez vos plantes à la liste de celles à garder, avec toutes les informations nécessaires.
+- **Gardiennage de plantes :** Faites garder vos plantes par d'autres utilisateurs.
 
 ## Technologies Utilisées
 - **Design :**  
@@ -108,3 +114,13 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+## License
+Ce projet est sous licence ISC.
+
+## Auteurs
+- Mattéo CAMPUS
+- Guillaume BONNAMOUR
+- Ludovic EDJAGA NANGA
+- Jérémy DASSAUD
+- Elliot CROZET
