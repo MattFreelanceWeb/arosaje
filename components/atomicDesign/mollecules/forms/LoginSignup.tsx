@@ -12,7 +12,7 @@ type Props = {}
 
 function LoginSignup({ }: Props) {
 
-    const [connection, setConnection] = useState<"login" | "signup">('signup')
+    const [connection, setConnection] = useState<"loginEmail" | "loginPwd" | "signup">('signup')
     const [emailSignup, setEmailSignup] = useState("")
     const [passwordSignup, setPasswordSignup] = useState("")
     const [confirmPasswordSignup, setConfirmPasswordSignup] = useState("")
@@ -111,11 +111,11 @@ function LoginSignup({ }: Props) {
                     <Input type="password" label="password" value={passwordSignup} onChange={(e) => { setPasswordSignup(e.target.value) }} />
                     <Input type="password" label="Confirm password" value={confirmPasswordSignup} onChange={(e) => { setConfirmPasswordSignup(e.target.value) }} />
                     <div className='w-full flex items-center justify-around gap-8'>
-                        <Button onClick={() => { setConnection('login') }} variant='shadow'> I have an account </Button>
+                        <Button onClick={() => { setConnection('loginEmail') }} variant='shadow'> I have an account </Button>
                         <Button color='primary' isDisabled={signupDisable} onClick={() => {
                             signUp({ email: emailSignup, password: passwordSignup }).then((responseData) => {
                                 setValidSignup(true)
-                                setConnection("login")
+                                setConnection("loginEmail")
                             })
                                 .catch((error) => {
                                     setValidSignup(false)
@@ -124,13 +124,35 @@ function LoginSignup({ }: Props) {
                     </div>
                 </form>
             )}
-            {connection === 'login' && (
+            {connection === 'loginEmail' && (
                 <>
 
 
                     <form className='rounded-md w-80 flex flex-col gap-8 md:w-3/4 p-8 bg-white/30 backdrop-blur-xl max-w-[700px]'>
                         <h2 className='text-white'>{validSignup && "Votre compte est créé, vous pouvez à présent vous connecter"}</h2>
                         <Input type="email" label="Email" value={emailLogin} onChange={(e) => { setEmailLogin(e.target.value) }} />
+
+                        <div className='w-full flex items-center justify-around'>
+                            <Button
+                                variant='ghost'
+                                onClick={() => { setConnection('signup') }}>
+                                I need an account
+                            </Button>
+                            <Button isDisabled={!(emailLogin.length>0)} color='primary' onClick={() => {
+                                setConnection("loginPwd")
+                            }}>Suivant</Button>
+                        </div>
+                    </form>
+                </>
+
+
+            )}
+
+            {connection === 'loginPwd' && (
+                <>
+
+
+                    <form className='rounded-md w-80 flex flex-col gap-8 md:w-3/4 p-8 bg-white/30 backdrop-blur-xl max-w-[700px]'>
                         <Input type="password" label="password" value={passwordLogin} onChange={(e) => { setPasswordLogin(e.target.value) }} />
 
                         <div className='w-full flex items-center justify-around'>
@@ -139,7 +161,7 @@ function LoginSignup({ }: Props) {
                                 onClick={() => { setConnection('signup') }}>
                                 I need an account
                             </Button>
-                            <Button isDisabled={!(emailLogin.length>0) && !(passwordLogin.length>0)} color='primary' onClick={() => {
+                            <Button isDisabled={!(passwordLogin.length>0)} color='primary' onClick={() => {
                                 login({ email: emailLogin, password: passwordLogin }).then((responseData) => {
 
 
@@ -147,7 +169,7 @@ function LoginSignup({ }: Props) {
                                     .catch((error) => {
 
                                     });
-                            }}>Log-in</Button>
+                            }}>Log in</Button>
                         </div>
                     </form>
                 </>
