@@ -2,45 +2,22 @@
 
 import { Button, Card, CardBody, Image, Avatar, Badge, Link, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from "@nextui-org/react"
 import { useParams, useRouter } from "next/navigation";
+import { PlantForList } from "@/utils/interfaces"
+import { useFetchPlants } from "@/utils/customHooks";
 
 import { useEffect, useState } from "react";
 
 type Props = {}
 
-interface Plant {
-    id: number;
-    common_name: string;
-    scientific_name: string;
-    image_url: string;
-    ownerId: number;
-    guardianId: number | null;
-    addressId: number;
-    createdAt: string;
-    updatedAt: string;
-    owner: {
-        id: number;
-        email: string;
-        userName: string;
-        password: string;
-        imageSrc: string | null;
-        createdAt: string;
-        updatedAt: string;
-    };
-    comment: any[]; // Vous pouvez définir un type spécifique pour les commentaires si nécessaire
-}
-
 function PlantList({ }: Props) {
 
-    const [plants, setPlants] = useState<Plant[]>()
+
+    const plants = useFetchPlants()
     const [isGuarded, setIsGuarded] = useState(false)
-
-    const params = useParams()
-
-    const router = useRouter()
 
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-    const addguadian = async (plants: Plant[],) => {
+    const addguadian = async (plants: PlantForList[],) => {
 
         const token = localStorage.getItem('token')
 
@@ -51,7 +28,7 @@ function PlantList({ }: Props) {
 
         plants.forEach(async item => {
             try {
-                const url = `http://localhost:8080/api/plant/${item.id}/addguardian`
+                const url = `${process.env.NEXT_PUBLIC_API_URL}/api/plant/${item.id}/addguardian`
 
                 const response = await fetch(url, {
                     method: 'PUT',
@@ -73,7 +50,7 @@ function PlantList({ }: Props) {
 
     }
 
-    const removeGuadian = async (plants: Plant[],) => {
+    const removeGuadian = async (plants: PlantForList[],) => {
 
         const token = localStorage.getItem('token')
 
@@ -84,7 +61,7 @@ function PlantList({ }: Props) {
 
         plants.forEach(async item => {
             try {
-                const url = `http://localhost:8080/api/plant/${item.id}/removeGuardian`
+                const url = `${process.env.NEXT_PUBLIC_API_URL}/api/plant/${item.id}/removeGuardian`
 
                 const response = await fetch(url, {
                     method: 'PUT',
@@ -105,60 +82,6 @@ function PlantList({ }: Props) {
         });
 
     }
-
-
-    useEffect(() => {
-
-        const token = localStorage.getItem('token')
-
-        const decodedQueryString = decodeURIComponent(params.list_id as string);
-
-        const paramsToGet = decodedQueryString.split("&");
-
-        const queryParams: any = {};
-
-        paramsToGet.forEach(param => {
-            const [key, value] = param.split("=");
-            queryParams[key] = parseInt(value);
-        });
-
-        const userId = queryParams["userId"];
-        const addressId = queryParams["addressId"];
-
-
-        const fetchPlants = async () => {
-            try {
-                const headers = {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "application/json",
-                };
-
-                const url = `http://localhost:8080/api/plant/${userId}/${addressId}`
-
-                const response = await fetch(url, {
-                    method: "GET",
-                    headers: headers,
-                });
-                if (!response.ok) {
-                    console.log(response)
-                    if (response.status === 403) {
-                        localStorage.removeItem('token')
-                        router.push("/connection")
-                    }
-                    throw new Error("Erreur lors de la récupération des données des plantes");
-                }
-                const data = await response.json();
-
-                setPlants(data.data);
-            } catch (error) {
-                console.error(error);
-            }
-        }
-
-        fetchPlants();
-    }, [params.list_id, router, onOpenChange]);
-
-
 
     useEffect(() => {
 

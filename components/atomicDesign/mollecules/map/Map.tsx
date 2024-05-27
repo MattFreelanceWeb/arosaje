@@ -58,7 +58,7 @@ export default function MyMap(props: any) {
                     "Content-Type": "application/json",
                 };
     
-                const url = `http://localhost:8080/api/plant/by-coordinates/${position && position[0]}/${position && position[1]}`
+                const url = `${process.env.NEXT_PUBLIC_API_URL}/api/plant/by-coordinates/${position && position[0]}/${position && position[1]}`
 
                 const response = await fetch(url, {
                     method: "GET",

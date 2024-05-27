@@ -8,109 +8,20 @@ import { Avatar, Button, Card, CardBody, Chip, Divider, Input, Modal, ModalBody,
 import Image from 'next/image'
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
+import { User} from "@/utils/interfaces"
 const jwt = require("jsonwebtoken")
 
 import React, { useEffect, useState } from 'react'
+import { useFetchPlants, useFetchUser } from '@/utils/customHooks'
 
 type Props = {}
 
 function Profile_ID_page({ }: Props) {
 
-  interface User {
-    userId: number;
-    userName: string;
-    email: string;
-    address: Address[];
-    plantsOwned: Plant[];
-    plantsGuarded: Plant[];
-  }
-
-  interface Address {
-    id: number;
-    number: number;
-    street: string;
-    postalCode: number;
-    city: string;
-    country: string;
-    lat: number;
-    lng: number;
-    userId: number;
-    createdAt: string;
-    updatedAt: string;
-  }
-
-  interface Plant {
-    common_name: string;
-    scientific_name: string;
-    image_url: string;
-  }
-
-  interface PlantData {
-    common_name?: string;
-    scientific_name?: string;
-    image_url?: string;
-    addressId?: number;
-  }
-
   const [editName, setEditName] = useState(false)
   const [nameValue, setNameValue] = useState('')
-  const [user, setUser] = useState<User>()
   const [toggleAddressList, setToggleAddressList] = useState(false)
-
-  const router = useRouter()
-  const params = useParams()
-
-
-  useEffect(() => {
-
-
-    const fetchUser = async () => {
-
-      try {
-
-        const token = localStorage.getItem("token")
-        const decodedToken = await jwt.decode(token, { complete: true });
-
-        const userId = await decodedToken.payload.userId
-
-        const headers = {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        };
-
-        const url = `http://localhost:8080/api/user/${params.id}`
-
-        const response = await fetch(url, {
-          method: "GET",
-          headers: headers,
-        });
-        if (!response.ok) {
-          if(response.status === 403){
-            localStorage.removeItem('token')
-            router.push("/connection")
-        }
-          console.log(response)
-          throw new Error("Erreur lors de la récupération des données des plantes");
-        }
-        const data = await response.json();
-
-        //log for dev mode
-        console.log(data)
-
-        setUser({ ...data, id: userId });
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchUser()
-
-  }, [toggleAddressList, router])
-
-
-
-
-
+  const user = useFetchUser()
 
 
   return (
