@@ -1,0 +1,63 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+ 
+    <groupId>com.arosaje.app</groupId>
+    <artifactId>arosaje</artifactId>
+    <version>1</version>
+    
+    <properties>
+        <!-- Spécifier la version de Selenium -->
+        <selenium.version>3.141.59</selenium.version>
+        <!-- Spécifier la version de JUnit -->
+        <junit.version>4.13.2</junit.version>
+	<testng.version>7.9.0</testng.version>
+    </properties>
+
+    <dependencies>
+        <!-- Dépendance pour Selenium WebDriver -->
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <version>${selenium.version}</version>
+        </dependency>
+        <!-- Dépendance pour JUnit -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+	<dependency>
+      		<groupId>org.testng</groupId>
+      		<artifactId>testng</artifactId>
+      		<version>${testng.version}</version>
+      		<scope>test</scope>
+    	</dependency>
+    </dependencies>
+    
+    <build>
+        <plugins>
+            <!-- Plugin pour compiler et exécuter les tests -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+            <!-- Plugin pour générer des rapports de tests -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M5</version>
+                <configuration>
+                    <reportsDirectory>${basedir}/pb-reporting/test-output</reportsDirectory>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
