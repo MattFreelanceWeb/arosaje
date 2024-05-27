@@ -79,7 +79,7 @@ function Plant_id_page({ }: Props) {
 				'Content-Type': 'application/json',
 			};
 
-			const response = await fetch(`http://localhost:8080/api/comment/users/${userId}/plants/${plants?.id}/comments`, {
+			const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/comment/users/${userId}/plants/${plants?.id}/comments`, {
 				method: 'POST',
 				headers: headers,
 				body: JSON.stringify(comment),
@@ -112,7 +112,7 @@ function Plant_id_page({ }: Props) {
 				'Content-Type': 'application/json',
 			};
 
-			const response = await fetch(`http://localhost:8080/api/comment/${commentId}`, {
+			const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/comment/${commentId}`, {
 				method: 'DELETE',
 				headers: headers,
 				body: JSON.stringify(comment),
@@ -142,7 +142,7 @@ function Plant_id_page({ }: Props) {
 					"Content-Type": "application/json",
 				};
 
-				const url = `http://localhost:8080/api/plant/${params.id}`
+				const url = `${process.env.NEXT_PUBLIC_API_URL}/api/plant/${params.id}`
 
 				const response = await fetch(url, {
 					method: "GET",

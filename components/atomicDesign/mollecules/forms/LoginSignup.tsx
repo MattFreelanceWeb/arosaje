@@ -29,7 +29,7 @@ function LoginSignup({ }: Props) {
 
     const signUp = async (userData: { email: string, password: string }) => {
         try {
-            const response = await fetch('http://localhost:8080/api/user/signup', {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user/signup`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -56,7 +56,7 @@ function LoginSignup({ }: Props) {
 
 
         try {
-            const response = await fetch('http://localhost:8080/api/user/login', {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

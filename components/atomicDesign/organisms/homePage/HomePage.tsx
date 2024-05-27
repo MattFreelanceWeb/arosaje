@@ -9,56 +9,19 @@ import DaySelect from "../../mollecules/select/DaySelect"
 import AddressSelect from "../../mollecules/select/AddressSelect"
 import PhotoInput from "../../mollecules/inputs/PhotoInput"
 import CreateAddress from "../../mollecules/inputs/CreateAddress"
+import { useFetchUser } from "@/utils/customHooks"
+import { User, Address, PlantForUser, PlantData} from "@/utils/interfaces"
 const jwt = require("jsonwebtoken")
 
 
 
 export default function HomePage() {
 
-  // todo: export interface in a separate file with export
-
-  interface User {
-    userId: number;
-    userName: string;
-    email: string;
-    address: Address[];
-    plantsOwned: Plant[];
-    plantsGuarded: Plant[];
-  }
-
-  interface Address {
-    id: number;
-    number: number;
-    street: string;
-    postalCode: number;
-    city: string;
-    country: string;
-    lat: number;
-    lng: number;
-    userId: number;
-    createdAt: string;
-    updatedAt: string;
-  }
-
-  interface Plant {
-    common_name: string;
-    scientific_name: string;
-    image_url: string;
-  }
-
-  interface PlantData {
-    common_name?: string;
-    scientific_name?: string;
-    image_url?: string;
-    addressId?: number;
-  }
-
   const [daySlected, setDaySlected] = useState()
-  const [plantSelected, setPlantSelected] = useState<Plant>()
+  const [plantSelected, setPlantSelected] = useState<PlantForUser>()
   const [addressSelected, setAddressSelected] = useState<Address>()
-  const [user, setUser] = useState<User>()
   const [isPlantLoading, setIsPlantLoading] = useState(false)
-
+  const user = useFetchUser()
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
@@ -75,7 +38,7 @@ export default function HomePage() {
         'Content-Type': 'application/json',
       };
 
-      const response = await fetch(`http://localhost:8080/api/plant/users/${userId}/plants`, {
+      const response = await fetch(`${process.env.NEXT_PUBLI_API_URL}/api/plant/users/${userId}/plants`, {
         method: 'POST',
         headers: headers,
         body: JSON.stringify(plantData),
@@ -94,50 +57,6 @@ export default function HomePage() {
       setIsPlantLoading(false)
     }
   };
-
-
-
-  useEffect(() => {
-
-
-    const fetchUser = async () => {
-
-      try {
-
-        const token = localStorage.getItem("token")
-        const decodedToken = await jwt.decode(token, { complete: true });
-
-        const userId = await decodedToken.payload.userId
-
-        const headers = {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        };
-
-        const url = `http://localhost:8080/api/user/${userId}`
-
-        const response = await fetch(url, {
-          method: "GET",
-          headers: headers,
-        });
-        if (!response.ok) {
-          console.log(response)
-          throw new Error("Erreur lors de la récupération des données des plantes");
-        }
-        const data = await response.json();
-
-        //log for dev mode
-        console.log(data)
-
-        setUser({ ...data, id: userId });
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchUser()
-
-  }, [onOpenChange])
 
   const Map = useMemo(() => dynamic(
     () => import('@/components/atomicDesign/mollecules/map/Map'),

@@ -55,7 +55,7 @@ function CreateAddress({ }: Props) {
                 'Content-Type': 'application/json',
             };
 
-            const response = await fetch(`http://localhost:8080/api/address/${userId}`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/address/${userId}`, {
                 method: 'POST',
                 headers: headers,
                 body: JSON.stringify({ ...address, lat: latLng[0], lng: latLng[1], country: "france" }),

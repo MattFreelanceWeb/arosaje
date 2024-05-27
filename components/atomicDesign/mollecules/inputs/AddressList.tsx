@@ -4,22 +4,8 @@ import { Button } from '@nextui-org/button'
 import { Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from '@nextui-org/react'
 import React, { useState } from 'react'
 import CreateAddress from './CreateAddress'
+import { Address } from "@/utils/interfaces"
 const jwt = require("jsonwebtoken")
-
-
-interface Address {
-    id: number;
-    number: number;
-    street: string;
-    postalCode: number;
-    city: string;
-    country: string;
-    lat: number;
-    lng: number;
-    userId: number;
-    createdAt: string;
-    updatedAt: string;
-}
 
 type Props = { addressArray: Address[], toggleAddressList: boolean, setToggleAddressList: Function }
 
@@ -39,7 +25,7 @@ function AddressList({ addressArray, toggleAddressList, setToggleAddressList }: 
                 "Content-Type": "application/json",
             };
 
-            const response = await fetch(`http://localhost:8080/api/address/${addressId}`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/address/${addressId}`, {
                 method: 'DELETE',
                 headers: headers,
             });
