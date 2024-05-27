@@ -7,6 +7,7 @@ import { useRouter, usePathname, useSearchParams } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 
 import Logo from "@/res/logo.webp"
+import Link from 'next/link'
 
 type Props = {}
 
@@ -16,6 +17,7 @@ function LoginSignup({ }: Props) {
     const [emailSignup, setEmailSignup] = useState("")
     const [passwordSignup, setPasswordSignup] = useState("")
     const [confirmPasswordSignup, setConfirmPasswordSignup] = useState("")
+    const [acceptTerms, setAcceptTerms] = useState(false)
     const [validSignup, setValidSignup] = useState(false)
     const [signupDisable, setSignupDisable] = useState(true)
 
@@ -87,13 +89,15 @@ function LoginSignup({ }: Props) {
             setSignupDisable(true)
         } else if (passwordSignup !== confirmPasswordSignup) {
             setSignupDisable(true)
-        }
+        } else if (!acceptTerms) {
+            setSignupDisable(true)
+        } 
         else {
             setSignupDisable(false)
         }
 
 
-    }, [passwordSignup, confirmPasswordSignup])
+    }, [passwordSignup, confirmPasswordSignup, acceptTerms])
 
 
 
@@ -121,6 +125,21 @@ function LoginSignup({ }: Props) {
                                     setValidSignup(false)
                                 });
                         }}> Sign-up </Button>
+                    </div>
+                    <div className="flex items-center">
+                        <input
+                            type="checkbox"
+                            id="acceptTerms"
+                            checked={acceptTerms}
+                            onChange={(e) => setAcceptTerms(e.target.checked)}
+                        />
+                        <label htmlFor="acceptTerms" className="ml-2 text-sm">
+                            J'accepte les{" "}
+                            <Link
+                                href="/userTerms" target="_blank" className="underline">
+                                conditions générales d'utilisation
+                            </Link>
+                        </label>
                     </div>
                 </form>
             )}
