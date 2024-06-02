@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 import { User } from "@/utils/interfaces"
-import { useFetchUser } from '@/utils/customHooks'
+import { useFetchUserFromToken } from '@/utils/customHooks'
 const jwt = require("jsonwebtoken")
 
 
@@ -13,7 +13,7 @@ type Props = { userId: number, userName: string, imgSrc?: string }
 
 function Profile({ userId, imgSrc, userName }: Props) {
 
-    const user = useFetchUser()
+    const user = useFetchUserFromToken()
     const router = useRouter()
 
     const signOut = async () => {
@@ -34,7 +34,7 @@ function Profile({ userId, imgSrc, userName }: Props) {
                 </PopoverTrigger>
                 <PopoverContent>
                     <div className="flex flex-col items-center gap-4 p-2">
-                        <Button as={Link} href={`/profil/${user?.userId}`} className="bg-transparent">Mon profil</Button>
+                        <Button as={Link} href={`/profil/${user?.id}`} className="bg-transparent">Mon profil</Button>
                         <Button color="danger" onClick={() => { signOut() }}>Se déconnecter</Button>
                     </div>
                 </PopoverContent>
@@ -44,5 +44,3 @@ function Profile({ userId, imgSrc, userName }: Props) {
 }
 
 export default Profile
-
-// 

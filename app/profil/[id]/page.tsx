@@ -12,7 +12,7 @@ import { User} from "@/utils/interfaces"
 const jwt = require("jsonwebtoken")
 
 import React, { useEffect, useState } from 'react'
-import { useFetchPlants, useFetchUser } from '@/utils/customHooks'
+import { useFetchPlants, useFetchUserFromToken, useFetchUserFromUrl } from '@/utils/customHooks'
 
 type Props = {}
 
@@ -21,7 +21,7 @@ function Profile_ID_page({ }: Props) {
   const [editName, setEditName] = useState(false)
   const [nameValue, setNameValue] = useState('')
   const [toggleAddressList, setToggleAddressList] = useState(false)
-  const user = useFetchUser()
+  const user = useFetchUserFromUrl()
 
 
   return (

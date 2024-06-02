@@ -1,9 +1,61 @@
 import { useState, useEffect } from 'react';
 import { User, Address, PlantForUser, PlantForList, PlantData } from './interfaces';
-import { useParams, useRouter } from "next/navigation";
+import { useParams,  useRouter  } from "next/navigation";
 const jwt = require("jsonwebtoken");
 
-export function useFetchUser() {
+export function useFetchUserFromUrl() {
+
+  const [user, setUser] = useState<User>()
+  const router = useRouter()
+
+  const params = useParams()
+
+
+  useEffect(() => {
+      const fetchUser = async () => {
+  
+        try {  
+          const token = localStorage.getItem("token")
+
+          const headers = {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          };
+  
+          const url = `${process.env.NEXT_PUBLIC_API_URL}/api/user/${params.id}`
+  
+          const response = await fetch(url, {
+            method: "GET",
+            headers: headers,
+          });
+          if (!response.ok) {
+            if(response.status === 403){
+              localStorage.removeItem('token')
+              router.push("/connection")
+            }
+            console.log(response)
+            throw new Error("Erreur lors de la récupération des données des plantes");
+          }
+          const data = await response.json();
+  
+          //log for dev mode
+          console.log(data)
+  
+          setUser({...data, id:params.id})
+        } catch (error) {
+          console.error(error);
+        }
+      };
+  
+      fetchUser()
+  
+    }, [])
+
+    return user
+}
+
+
+export function useFetchUserFromToken() {
 
   const [user, setUser] = useState<User>()
   const router = useRouter()

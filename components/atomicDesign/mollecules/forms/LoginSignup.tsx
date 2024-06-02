@@ -106,7 +106,7 @@ function LoginSignup({ }: Props) {
             <div className='absolute top-0 left-0 w-full h-full '>
                 <Image src={"https://cdn.pixabay.com/photo/2016/11/19/11/11/hands-1838658_960_720.jpg"} alt="" className='object-cover h-full w-full' width={1280} height={956} />
             </div>
-            <div className='absolute top-4 w-48 h-48 rounded-md z-10 md:right-14 top-0 w-60 h-60 rounded-md z-10 '>
+            <div className='absolute md:right-14 top-0 w-60 h-60 rounded-md z-10 '>
                 <Image src={Logo} alt='' />
             </div>
             {connection === 'signup' && (
@@ -134,10 +134,10 @@ function LoginSignup({ }: Props) {
                             onChange={(e) => setAcceptTerms(e.target.checked)}
                         />
                         <label htmlFor="acceptTerms" className="ml-2 text-sm">
-                            J'accepte les{" "}
+                            J&apos;accepte les{" "}
                             <Link
                                 href="/userTerms" target="_blank" className="underline">
-                                conditions générales d'utilisation
+                                conditions générales d&apos;utilisation
                             </Link>
                         </label>
                     </div>

@@ -9,7 +9,7 @@ import DaySelect from "../../mollecules/select/DaySelect"
 import AddressSelect from "../../mollecules/select/AddressSelect"
 import PhotoInput from "../../mollecules/inputs/PhotoInput"
 import CreateAddress from "../../mollecules/inputs/CreateAddress"
-import { useFetchUser } from "@/utils/customHooks"
+import { useFetchUserFromToken } from "@/utils/customHooks"
 import { User, Address, PlantForUser, PlantData} from "@/utils/interfaces"
 const jwt = require("jsonwebtoken")
 
@@ -21,7 +21,7 @@ export default function HomePage() {
   const [plantSelected, setPlantSelected] = useState<PlantForUser>()
   const [addressSelected, setAddressSelected] = useState<Address>()
   const [isPlantLoading, setIsPlantLoading] = useState(false)
-  const user = useFetchUser()
+  const user = useFetchUserFromToken()
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
