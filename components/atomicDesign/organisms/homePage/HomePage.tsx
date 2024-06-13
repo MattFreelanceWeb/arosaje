@@ -38,7 +38,7 @@ export default function HomePage() {
         'Content-Type': 'application/json',
       };
 
-      const response = await fetch(`${process.env.NEXT_PUBLI_API_URL}/api/plant/users/${userId}/plants`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/plant/users/${userId}/plants`, {
         method: 'POST',
         headers: headers,
         body: JSON.stringify(plantData),
