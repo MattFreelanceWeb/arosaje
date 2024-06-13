@@ -85,7 +85,7 @@ export default function HomePage() {
           </svg>
           Browse
         </Button> */}
-        <Button onPress={onOpen} size="lg" color="primary" className="">Add a plant 🌱</Button>
+        <Button onPress={onOpen} size="lg" color="primary" className="-translate-y-12">Add a plant 🌱</Button>
       </section>
       <section>
         <Modal placement={"center"} isOpen={isOpen} onOpenChange={onOpenChange} className={`max-h-[80%] overflow-y-auto ${isOpen ? 'z-[1000]' : '-z-10'}`}>

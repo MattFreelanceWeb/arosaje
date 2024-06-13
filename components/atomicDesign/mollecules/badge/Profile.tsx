@@ -27,7 +27,7 @@ function Profile({ userId, imgSrc, userName }: Props) {
     }
 
     return (
-        <section className="absolute top-4 right-4 z-[1000]">
+        <section className="absolute top-12 right-12 z-[1000]">
             <Popover placement="right">
                 <PopoverTrigger>
                     <Avatar size="lg" name={userName} src={imgSrc ? imgSrc : ""} />

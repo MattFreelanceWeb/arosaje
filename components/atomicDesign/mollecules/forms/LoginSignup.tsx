@@ -85,13 +85,13 @@ function LoginSignup({ }: Props) {
 
         if (passwordSignup.length < 2) {
             setSignupDisable(true)
-        } else if (!/[!@#$%^&*(),.?":{}|<>]/.test(passwordSignup)){
+        } else if (!/[!@#$%^&*(),.?":{}|<>]/.test(passwordSignup)) {
             setSignupDisable(true)
         } else if (passwordSignup !== confirmPasswordSignup) {
             setSignupDisable(true)
         } else if (!acceptTerms) {
             setSignupDisable(true)
-        } 
+        }
         else {
             setSignupDisable(false)
         }
@@ -103,14 +103,15 @@ function LoginSignup({ }: Props) {
 
     return (
         <>
-            <div className='absolute top-0 left-0 w-full h-full '>
+            <div className='fixed top-0 left-0 w-full h-full '>
                 <Image src={"https://cdn.pixabay.com/photo/2016/11/19/11/11/hands-1838658_960_720.jpg"} alt="" className='object-cover h-full w-full' width={1280} height={956} />
             </div>
-            <div className='absolute md:right-14 top-0 w-60 h-60 rounded-md z-10 '>
-                <Image src={Logo} alt='' />
-            </div>
+
             {connection === 'signup' && (
                 <form className=' rounded-md w-80 flex flex-col gap-8 md:w-3/4 p-8 backdrop-blur-xl bg-white/30 max-w-[700px]'>
+                    <div className='w-full flex itemx-center justify-center '>
+                        <Image src={Logo} alt='' />
+                    </div>
                     <Input type="email" label="Email" value={emailSignup} onChange={(e) => { setEmailSignup(e.target.value) }} />
                     <Input type="password" label="password" value={passwordSignup} onChange={(e) => { setPasswordSignup(e.target.value) }} />
                     <Input type="password" label="Confirm password" value={confirmPasswordSignup} onChange={(e) => { setConfirmPasswordSignup(e.target.value) }} />
@@ -145,9 +146,10 @@ function LoginSignup({ }: Props) {
             )}
             {connection === 'loginEmail' && (
                 <>
-
-
                     <form className='rounded-md w-80 flex flex-col gap-8 md:w-3/4 p-8 bg-white/30 backdrop-blur-xl max-w-[700px]'>
+                        <div className='w-full flex itemx-center justify-center '>
+                            <Image src={Logo} alt='' />
+                        </div>
                         <h2 className='text-white'>{validSignup && "Votre compte est créé, vous pouvez à présent vous connecter"}</h2>
                         <Input type="email" label="Email" value={emailLogin} onChange={(e) => { setEmailLogin(e.target.value) }} />
 
@@ -157,7 +159,7 @@ function LoginSignup({ }: Props) {
                                 onClick={() => { setConnection('signup') }}>
                                 I need an account
                             </Button>
-                            <Button isDisabled={!(emailLogin.length>0)} color='primary' onClick={() => {
+                            <Button isDisabled={!(emailLogin.length > 0)} color='primary' onClick={() => {
                                 setConnection("loginPwd")
                             }}>Suivant</Button>
                         </div>
@@ -180,7 +182,7 @@ function LoginSignup({ }: Props) {
                                 onClick={() => { setConnection('signup') }}>
                                 I need an account
                             </Button>
-                            <Button isDisabled={!(passwordLogin.length>0)} color='primary' onClick={() => {
+                            <Button isDisabled={!(passwordLogin.length > 0)} color='primary' onClick={() => {
                                 login({ email: emailLogin, password: passwordLogin }).then((responseData) => {
 
 

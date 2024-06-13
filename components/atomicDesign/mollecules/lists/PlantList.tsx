@@ -101,53 +101,21 @@ function PlantList({ }: Props) {
                     <div className="">
                         <h2 className="font-bold text-2xl"><span className="text-sm">Plante de :</span> {plants[0].owner.userName ? plants[0].owner.userName : plants[0].owner.email}</h2>
                     </div>
-                    <div>
-                        <Button className="capitalize" color={isGuarded ? "danger" : "success"} onClick={() => { onOpen() }}>{isGuarded ? "deliver" : "guard"}</Button>
-                    </div>
-                    <Modal placement={"center"} isOpen={isOpen} onOpenChange={onOpenChange} className={`max-h-[80%] overflow-y-auto ${isOpen ? 'z-[1000]' : '-z-10'}`}>
-                        <ModalContent>
-                            {(onClose) => (
-                                <>
-                                    <ModalHeader className="flex flex-col gap-1">{isGuarded ? "Deliver" : "Guard"} plants 🌱</ModalHeader>
 
-                                    <ModalBody className="flex flex-col items-center w-full justify-center">
-
-                                        <p>you are about to {isGuarded ? "deliver" : "guard"} those plants, do you confirm ?</p>
-
-                                    </ModalBody>
-                                    <ModalFooter className="w-full flex items-center justify-between">
-                                        <Button color="danger" variant="light" onPress={onClose} className="">
-                                            Close
-                                        </Button>
-                                        {isGuarded ?
-                                            <Button color="primary" onClick={() => { removeGuadian(plants), onClose() }}>
-                                                Deliver
-                                            </Button>
-                                            :
-                                            <Button color="primary" onClick={() => { addguadian(plants), onClose() }}>
-                                                Guard
-                                            </Button>
-                                        }
-
-                                    </ModalFooter>
-                                </>
-                            )}
-                        </ModalContent>
-                    </Modal>
                 </>
                 }
             </div>
 
 
             {plants && (
-                <div className="gap-4 grid grid-cols-1 mt-24 sm:grid-cols-2">
+                <div className="w-full gap-4 grid grid-cols-2 sm:grid-cols-2 py-40">
                     {plants.map((item) => (
                         <>
 
                             <Card
                                 isPressable
                                 isBlurred
-                                className="border-none bg-background/60 dark:bg-default-100/50 max-w-[610px]"
+                                className="border-none bg-background/60 dark:bg-default-100/50 max-w-[610px] "
                                 shadow="sm"
                                 as={Link}
                                 href={`/plant/userId=${item.ownerId}&addressId=${item.addressId}/${item.id}`}
@@ -191,6 +159,42 @@ function PlantList({ }: Props) {
                 </div>
 
             )}
+
+            {plants && <div className="">
+                <div className="fixed left-0 bottom-0 flex items-center justify-center w-full p-12  bg-white/30 backdrop-blur-xl ">
+                    <Button fullWidth className="capitalize max-w-2xl" color={isGuarded ? "danger" : "success"} onClick={() => { onOpen() }}>{isGuarded ? "deliver" : "guard"}</Button>
+                </div>
+                <Modal placement={"center"} isOpen={isOpen} onOpenChange={onOpenChange} className={`max-h-[80%] overflow-y-auto ${isOpen ? 'z-[1000]' : '-z-10'}`}>
+                    <ModalContent>
+                        {(onClose) => (
+                            <>
+                                <ModalHeader className="flex flex-col gap-1">{isGuarded ? "Deliver" : "Guard"} plants 🌱</ModalHeader>
+
+                                <ModalBody className="flex flex-col items-center w-full justify-center">
+
+                                    <p>you are about to {isGuarded ? "deliver" : "guard"} those plants, do you confirm ?</p>
+
+                                </ModalBody>
+                                <ModalFooter className="w-full flex items-center justify-between">
+                                    <Button color="danger" variant="light" onPress={onClose} className="">
+                                        Close
+                                    </Button>
+                                    {isGuarded ?
+                                        <Button color="primary" onClick={() => { removeGuadian(plants), onClose() }}>
+                                            Deliver
+                                        </Button>
+                                        :
+                                        <Button color="primary" onClick={() => { addguadian(plants), onClose() }}>
+                                            Guard
+                                        </Button>
+                                    }
+
+                                </ModalFooter>
+                            </>
+                        )}
+                    </ModalContent>
+                </Modal>
+            </div>}
 
         </>
     )
