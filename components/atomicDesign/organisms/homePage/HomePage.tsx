@@ -85,14 +85,14 @@ export default function HomePage() {
           </svg>
           Browse
         </Button> */}
-        <Button onPress={onOpen} size="lg" color="primary" className="-translate-y-12">Add a plant 🌱</Button>
+        <Button onPress={onOpen} size="lg" color="primary" className="-translate-y-12">Ajouter une plante 🌱</Button>
       </section>
       <section>
         <Modal placement={"center"} isOpen={isOpen} onOpenChange={onOpenChange} className={`max-h-[80%] overflow-y-auto ${isOpen ? 'z-[1000]' : '-z-10'}`}>
           <ModalContent>
             {(onClose) => (
               <>
-                <ModalHeader className="flex flex-col gap-1">Add a plant 🌱</ModalHeader>
+                <ModalHeader className="flex flex-col gap-1">Ajouter une plante 🌱</ModalHeader>
 
                 <ModalBody className="flex flex-col items-center w-full justify-center">
                   {isPlantLoading ? <Spinner />
@@ -115,10 +115,10 @@ export default function HomePage() {
                 </ModalBody>
                 <ModalFooter className="w-full flex items-center justify-between">
                   <Button color="danger" variant="light" onPress={onClose} className="">
-                    Close
+                    Fermer
                   </Button>
                   <Button isDisabled={!(!!plantSelected && !!addressSelected)} color="primary" onClick={() => { createPlant({ common_name: plantSelected?.common_name, scientific_name: plantSelected?.scientific_name, image_url: plantSelected?.image_url, addressId: addressSelected?.id }), onClose() }}>
-                    Post my plant
+                    Publier ma plante
                   </Button>
                 </ModalFooter>
               </>

@@ -113,10 +113,10 @@ function LoginSignup({ }: Props) {
                         <Image src={Logo} alt='' />
                     </div>
                     <Input type="email" label="Email" value={emailSignup} onChange={(e) => { setEmailSignup(e.target.value) }} />
-                    <Input type="password" label="password" value={passwordSignup} onChange={(e) => { setPasswordSignup(e.target.value) }} />
-                    <Input type="password" label="Confirm password" value={confirmPasswordSignup} onChange={(e) => { setConfirmPasswordSignup(e.target.value) }} />
+                    <Input type="password" label="Mot de passe" value={passwordSignup} onChange={(e) => { setPasswordSignup(e.target.value) }} />
+                    <Input type="password" label="Confirmer le mot de passe" value={confirmPasswordSignup} onChange={(e) => { setConfirmPasswordSignup(e.target.value) }} />
                     <div className='w-full flex items-center justify-around gap-8'>
-                        <Button onClick={() => { setConnection('loginEmail') }} variant='shadow'> I have an account </Button>
+                        <Button onClick={() => { setConnection('loginEmail') }} variant='shadow'> Se connecter </Button>
                         <Button color='primary' isDisabled={signupDisable} onClick={() => {
                             signUp({ email: emailSignup, password: passwordSignup }).then((responseData) => {
                                 setValidSignup(true)
@@ -125,7 +125,7 @@ function LoginSignup({ }: Props) {
                                 .catch((error) => {
                                     setValidSignup(false)
                                 });
-                        }}> Sign-up </Button>
+                        }}> S'inscrire </Button>
                     </div>
                     <div className="flex items-center">
                         <input
@@ -157,7 +157,7 @@ function LoginSignup({ }: Props) {
                             <Button
                                 variant='ghost'
                                 onClick={() => { setConnection('signup') }}>
-                                I need an account
+                                Retour
                             </Button>
                             <Button isDisabled={!(emailLogin.length > 0)} color='primary' onClick={() => {
                                 setConnection("loginPwd")
@@ -174,13 +174,13 @@ function LoginSignup({ }: Props) {
 
 
                     <form className='rounded-md w-80 flex flex-col gap-8 md:w-3/4 p-8 bg-white/30 backdrop-blur-xl max-w-[700px]'>
-                        <Input type="password" label="password" value={passwordLogin} onChange={(e) => { setPasswordLogin(e.target.value) }} />
+                        <Input type="password" label="Mot de passe" value={passwordLogin} onChange={(e) => { setPasswordLogin(e.target.value) }} />
 
                         <div className='w-full flex items-center justify-around'>
                             <Button
                                 variant='ghost'
                                 onClick={() => { setConnection('signup') }}>
-                                I need an account
+                                Retour
                             </Button>
                             <Button isDisabled={!(passwordLogin.length > 0)} color='primary' onClick={() => {
                                 login({ email: emailLogin, password: passwordLogin }).then((responseData) => {
@@ -190,7 +190,7 @@ function LoginSignup({ }: Props) {
                                     .catch((error) => {
 
                                     });
-                            }}>Log in</Button>
+                            }}>Se connecter</Button>
                         </div>
                     </form>
                 </>

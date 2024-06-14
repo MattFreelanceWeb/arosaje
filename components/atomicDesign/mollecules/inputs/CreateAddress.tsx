@@ -80,28 +80,28 @@ function CreateAddress({ }: Props) {
 
     return (
         <>
-            <Button onPress={onOpen} fullWidth color='primary'> <span className='font-bold text-xl'>+</span>Create a new Address </Button>
+            <Button onPress={onOpen} fullWidth color='primary'> <span className='font-bold text-xl'>+</span>Ajouter une nouvelle adresse</Button>
             <Modal placement={"center"} isOpen={isOpen} onOpenChange={onOpenChange} className={`max-h-[80%] overflow-y-auto ${isOpen ? 'z-[1000]' : '-z-10'}`}>
 
                 <ModalContent>
                     {(onClose) => (
                         <>
-                            <ModalHeader className="flex flex-col gap-1">Add a new address 📍</ModalHeader>
+                            <ModalHeader className="flex flex-col gap-1">Ajouter une nouvelle adresse 📍</ModalHeader>
 
                             <ModalBody className="flex flex-col items-center w-full justify-center">
 
 
                                 <>
-                                    <Input type='number' placeholder='enter your the number' value={number?.toString()} onChange={(e) => { setNumber(parseInt(e.target.value)) }} />
-                                    <Input type='text' placeholder='enter your street' value={street} onChange={(e) => { setStreet(e.target.value) }} />
-                                    <Input type='number' placeholder='enter your postal code' value={postalCode?.toString()} onChange={(e) => { setPostalCode(parseInt(e.target.value)) }} />
-                                    <Input type='city' placeholder='enter your city' value={city} onChange={(e) => { setCity(e.target.value) }} />
+                                    <Input type='number' placeholder='Numéro' value={number?.toString()} onChange={(e) => { setNumber(parseInt(e.target.value)) }} />
+                                    <Input type='text' placeholder='Rue' value={street} onChange={(e) => { setStreet(e.target.value) }} />
+                                    <Input type='number' placeholder='Code postal' value={postalCode?.toString()} onChange={(e) => { setPostalCode(parseInt(e.target.value)) }} />
+                                    <Input type='city' placeholder='Ville' value={city} onChange={(e) => { setCity(e.target.value) }} />
                                 </>
 
                             </ModalBody>
                             <ModalFooter className="w-full flex items-center justify-between">
                                 <Button color="danger" variant="light" onPress={onClose} className="">
-                                    Close
+                                    Fermer
                                 </Button>
                                 <Button onClick={() => {
                                     createAddress(
@@ -114,7 +114,7 @@ function CreateAddress({ }: Props) {
                                     onClose()
 
                                 }}>
-                                    add a new address
+                                        Ajouter
                                 </Button>
                             </ModalFooter>
                         </>

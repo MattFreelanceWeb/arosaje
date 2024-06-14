@@ -43,7 +43,7 @@ function Profile_ID_page({ }: Props) {
           </section>
           <section className='mt-10 w-full flex flex-col items-center justify-center gap-4 max-w-96 bg-white/30 backdrop-blur-xl border-2 rounded-md p-4'>
             <div className='flex items-center gap-2 w-full'>
-            <h2>Name</h2>
+            <h2>Nom</h2>
             <Input color='primary' fullWidth isDisabled={!editName} type="text" value={user.userName ? user.userName : nameValue} onChange={(e) => setNameValue(e.target.value)} />
               {editName ?
                 <div className='flex items-center gap-2'>
@@ -72,13 +72,13 @@ function Profile_ID_page({ }: Props) {
             <CreateAddress />
 
             <Divider className="my-4" />
-            <h3 className='font-bold text-xl capitalize'>🏡 plant i own</h3>
+            <h3 className='font-bold text-xl capitalize'>🏡 Mes plantes</h3>
 
             <ListPlant plantOwned={user.plantsOwned} />
 
 
             <Divider className="my-4" />
-            <h3 className='font-bold text-xl capitalize'> 🍀 plant i guard</h3>
+            <h3 className='font-bold text-xl capitalize'> 🍀 Plantes gardées</h3>
             <ListPlant plantOwned={user.plantsGuarded} />
 
           </section>

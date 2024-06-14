@@ -208,7 +208,7 @@ function Plant_id_page({ }: Props) {
 							</div>))
 							:
 							<div className='text-sm sm:text-base text-center w-full h-12 flex items-center justify-center rounded-md'>
-								no comment here
+								Aucun commentaire ici
 							</div>}
 					</div>
 

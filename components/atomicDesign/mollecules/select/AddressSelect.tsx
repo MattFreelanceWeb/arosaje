@@ -34,7 +34,7 @@ function AddressSelect({ setAddressSelected, addresses }: Props) {
     <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
       {addresses && <>
         <Select
-          label="Select an adress"
+          label="Sélectionner une adresse"
           className=""
           onChange={(e) => setAddressSelected(addresses[parseInt(e.target.value)])}
         >

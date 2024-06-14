@@ -99,7 +99,7 @@ function PlantList({ }: Props) {
                 </div>
                 {plants && <>
                     <div className="">
-                        <h2 className="font-bold text-2xl"><span className="text-sm">Plante de :</span> {plants[0].owner.userName ? plants[0].owner.userName : plants[0].owner.email}</h2>
+                        <h2 className="font-bold text-2xl"><span className="text-sm">Plante(s) de :</span> {plants[0].owner.userName ? plants[0].owner.userName : plants[0].owner.email}</h2>
                     </div>
 
                 </>
@@ -162,30 +162,30 @@ function PlantList({ }: Props) {
 
             {plants && <div className="">
                 <div className="fixed left-0 bottom-0 flex items-center justify-center w-full p-12  bg-white/30 backdrop-blur-xl ">
-                    <Button fullWidth className="capitalize max-w-2xl" color={isGuarded ? "danger" : "success"} onClick={() => { onOpen() }}>{isGuarded ? "deliver" : "guard"}</Button>
+                    <Button fullWidth className="max-w-2xl" color={isGuarded ? "danger" : "success"} onClick={() => { onOpen() }}>{isGuarded ? "Ne plus garder" : "Garder"}</Button>
                 </div>
                 <Modal placement={"center"} isOpen={isOpen} onOpenChange={onOpenChange} className={`max-h-[80%] overflow-y-auto ${isOpen ? 'z-[1000]' : '-z-10'}`}>
                     <ModalContent>
                         {(onClose) => (
                             <>
-                                <ModalHeader className="flex flex-col gap-1">{isGuarded ? "Deliver" : "Guard"} plants 🌱</ModalHeader>
+                                <ModalHeader className="flex flex-col gap-1">{isGuarded ? "Ne plus garder" : "Garder"} les plantes 🌱</ModalHeader>
 
                                 <ModalBody className="flex flex-col items-center w-full justify-center">
 
-                                    <p>you are about to {isGuarded ? "deliver" : "guard"} those plants, do you confirm ?</p>
+                                    <p>Vous {isGuarded ? "n'allez plus garder" : "allez garder"} ces plantes, confirmer ?</p>
 
                                 </ModalBody>
                                 <ModalFooter className="w-full flex items-center justify-between">
                                     <Button color="danger" variant="light" onPress={onClose} className="">
-                                        Close
+                                        Fermer
                                     </Button>
                                     {isGuarded ?
                                         <Button color="primary" onClick={() => { removeGuadian(plants), onClose() }}>
-                                            Deliver
+                                            Ne plus garder
                                         </Button>
                                         :
                                         <Button color="primary" onClick={() => { addguadian(plants), onClose() }}>
-                                            Guard
+                                            Garder
                                         </Button>
                                     }
 
