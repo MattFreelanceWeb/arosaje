@@ -99,7 +99,7 @@ export default function MyMap(props: any) {
                     {/* position de l'user */}
                     <Marker position={position as LatLngExpression} >
                         <Popup className="">
-                            You are here. 😉
+                            Vous êtes ici 😉
                         </Popup>
                     </Marker>
                     {
@@ -113,8 +113,8 @@ export default function MyMap(props: any) {
                                             <Card isPressable as={Link} href={`/plant/userId=${plant.userId}&addressId=${plant.addressId}`} className="w-36 h-36 flex flex-col items-center justify-center gap-1 p-2">
                                                 <Avatar name={plant.owner.email} />
                                                 <h3>{plant.common_name}</h3>
-                                                <p className="capitalize"> plante à garder: {plant.plants.length}</p>
-                                                <Button color="primary">voir</Button>
+                                                <p> Plante(s) à garder: {plant.plants.length}</p>
+                                                <Button color="primary">Voir</Button>
                                             </Card>
                                         </Popup>
                                         

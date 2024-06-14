@@ -62,7 +62,7 @@ function ListPlant({ plantOwned }: Props) {
                     <div className="flex flex-col col-span-6 md:col-span-8">
                         <div className="flex justify-between items-start">
                             <div className="flex flex-col gap-1">
-                                <h3 className="font-semibold text-foreground/90">no plant here</h3>
+                                <h3 className="font-semibold text-foreground/90">Aucune plante ici</h3>
                                 <p className="text-small text-foreground/80"></p>
                             </div>
                         </div>

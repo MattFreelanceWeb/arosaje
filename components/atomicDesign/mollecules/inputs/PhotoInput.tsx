@@ -44,7 +44,7 @@ function PhotoInput ({pictureToSend, setPictureToSend }: Props) {
 
     return (
         <div>
-            <h2>Take a picture </h2>
+            <h2>Prendre une photo</h2>
 
             {/* <div {...getRootProps()} >
                 <input {...getInputProps()} />

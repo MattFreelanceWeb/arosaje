@@ -57,12 +57,12 @@ function PlantInput({ setPlantSelected }: Props) {
     return (
         <div className="flex w-full flex-wrap md:flex-nowrap gap-4" >
             <Autocomplete
-                label="Select a plant"
+                label="Sélectionner une plante"
                 className=""
                 fullWidth
                 onInputChange={(e) => setPlantQuery(e)}
                 variant="bordered"
-                placeholder="Select a plant"
+                placeholder="..."
                 labelPlacement="inside"
 
             >
