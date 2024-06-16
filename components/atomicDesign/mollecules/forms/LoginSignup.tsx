@@ -125,7 +125,7 @@ function LoginSignup({ }: Props) {
                                 .catch((error) => {
                                     setValidSignup(false)
                                 });
-                        }}> S'inscrire </Button>
+                        }}> S&apos;inscrire </Button>
                     </div>
                     <div className="flex items-center">
                         <input
