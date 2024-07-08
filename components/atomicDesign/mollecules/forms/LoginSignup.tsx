@@ -161,7 +161,9 @@ function LoginSignup({ }: Props) {
                             </Button>
                             <Button isDisabled={!(emailLogin.length > 0)} color='primary' onClick={() => {
                                 setConnection("loginPwd")
-                            }}>Suivant</Button>
+                            }}>
+                                Suivant
+                            </Button>
                         </div>
                     </form>
                 </>

@@ -85,7 +85,7 @@ function PlantList({ }: Props) {
 
     useEffect(() => {
 
-        plants && setIsGuarded(!!plants[0].guardianId)
+        plants && plants[0] && setIsGuarded(!!plants[0].guardianId)
 
     }, [plants])
 
@@ -97,12 +97,19 @@ function PlantList({ }: Props) {
                 <div className="">
                     <Button color='primary' as={Link} href='/'>Retour</Button>
                 </div>
-                {plants && <>
+                {plants && plants[0] ? <>
                     <div className="">
-                        <h2 className="font-bold text-2xl"><span className="text-sm">Plante(s) de :</span> {plants[0].owner.userName ? plants[0].owner.userName : plants[0].owner.email}</h2>
+                        <h2 className="font-bold text-2xl">
+                            <span className="text-sm">
+                                Plante de :
+                            </span> {plants[0].owner.userName ? plants[0].owner.userName : plants[0].owner.email}</h2>
                     </div>
 
                 </>
+                    :
+                    <>
+                        pas de plante ici
+                    </>
                 }
             </div>
 

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Image, Button, Link, Badge, Avatar, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Divider, Input } from '@nextui-org/react'
 import { useParams, useRouter } from 'next/navigation';
 import PhotoInput from '@/components/atomicDesign/mollecules/inputs/PhotoInput';
@@ -32,6 +32,12 @@ function Plant_id_page({ }: Props) {
 		};
 	}
 
+	interface Comment {
+		content: string;
+		byteImage?: string;
+	}
+
+
 	const router = useRouter()
 
 	const [modal1Open, setModal1Open] = useState(false);
@@ -43,6 +49,8 @@ function Plant_id_page({ }: Props) {
 	const [isCommentLoading, setIsCommentLoading] = useState(false)
 
 	const [pictureToSend, setPictureToSend] = useState("")
+
+	const [openPhoto, setOpenPhoto] = useState(false)
 
 	const params = useParams()
 
@@ -65,39 +73,58 @@ function Plant_id_page({ }: Props) {
 		setModal2Open(false);
 	};
 
-	const createComment = async (comment: { content: string, byteImage: string }) => {
-
-		setIsCommentLoading(true)
+	const createComment = async (comment: Comment) => {
+		setIsCommentLoading(true);
 		try {
-			const token = localStorage.getItem("token")
-			const decodedToken = await jwt.decode(token, { complete: true });
+			const token = localStorage.getItem("token");
+			if (!token) {
+				throw new Error('Token not found');
+			}
 
-			const userId = await decodedToken.payload.userId
+			const decodedToken = await jwt.decode(token, { complete: true });
+			if (!decodedToken || !decodedToken.payload || !decodedToken.payload.userId) {
+				throw new Error('Invalid token');
+			}
+
+			const userId = decodedToken.payload.userId;
+			const plantId = plants?.id;  // Assurez-vous que plants.id est valide
+			if (!plantId) {
+				throw new Error('Plant ID not found');
+			}
 
 			const headers = {
 				Authorization: `Bearer ${token}`,
 				'Content-Type': 'application/json',
 			};
 
-			const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/comment/users/${userId}/plants/${plants?.id}/comments`, {
+			// Vérification du contenu du commentaire
+			if (!comment.content) {
+				throw new Error('Content is required');
+			}
+
+			if (!comment.byteImage) {
+				comment.byteImage = "fallback_content"
+			}
+
+			const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/comment/users/${userId}/plants/${plantId}/comments`, {
 				method: 'POST',
 				headers: headers,
 				body: JSON.stringify(comment),
 			});
 
 			if (!response.ok) {
-				throw new Error('Erreur lors de la création de la plante');
+				throw new Error('Erreur lors de la création du commentaire');
 			}
 
 			const data = await response.json();
 			return data;
 		} catch (error) {
 			console.error(error);
-			throw new Error('Une erreur est survenue lors de la création de la plante');
+			throw new Error('Une erreur est survenue lors de la création du commentaire');
 		} finally {
-			setIsCommentLoading(false)
+			setIsCommentLoading(false);
 		}
-	}
+	};
 
 	const deleteComment = async (commentId: number) => {
 		setIsCommentLoading(true)
@@ -158,9 +185,6 @@ function Plant_id_page({ }: Props) {
 				}
 				const data = await response.json();
 
-				//log for dev mode
-				console.log(data.data)
-
 				setPlants(data.data);
 			} catch (error) {
 				console.error(error);
@@ -168,14 +192,64 @@ function Plant_id_page({ }: Props) {
 		}
 
 		fetchPlants();
-	}, [params.id, router, isCommentLoading])
+	}, [params.id, router, isCommentLoading, plants?.ownerId, plants?.addressId])
 
+
+	const handleDelete = useCallback(
+		async () => {
+			try {
+				const token = localStorage.getItem("token")
+
+				const headers = {
+					Authorization: `Bearer ${token}`,
+					"Content-Type": "application/json",
+				};
+
+				const url = `${process.env.NEXT_PUBLIC_API_URL}/api/plant/${params.id}`
+
+				const response = await fetch(url, {
+					method: "DELETE",
+					headers: headers,
+				});
+				if (!response.ok) {
+					console.log(response)
+					if (response.status === 403) {
+						localStorage.removeItem('token')
+						router.push("/connection")
+					}
+					throw new Error("Erreur lors de la suppression des données des plantes");
+				}
+
+				const data = await response.json();
+
+				if (data) {
+					router.push(`/plant/userId=${plants?.ownerId}&addressId=${plants?.addressId}`)
+				}
+
+			} catch (error) {
+				console.error(error);
+			}
+		},
+		[params.id, router, plants?.ownerId, plants?.addressId],
+	)
 
 	return (
 		<main className='flex min-h-screen flex-col items-center justify-center p-4'>
 			<div className="absolute top-5 left-5">
-				<Button color='primary' as={Link} href={`/plant/userId=${plants?.ownerId}&addressId=${plants?.addressId}`}>Retour</Button>
+				<Button
+					color='primary'
+					as={Link}
+					href={`/plant/userId=${plants?.ownerId}&addressId=${plants?.addressId}`}>
+					Retour
+				</Button>
 			</div>
+
+			<div className="absolute top-5 right-5">
+				<Button color='danger' onPress={handleDelete}>
+					Delete
+				</Button>
+			</div>
+
 
 			<div className='absolute top-32 gap-4 grid grid-cols-1 sm:grid-cols-2 sm:top-16'>
 				<Image
@@ -201,7 +275,7 @@ function Plant_id_page({ }: Props) {
 								</div>
 
 								{/** delete comment */}
-								<button className='absolute top-2 right-2 text-xs w-5 h-5 p-2 flex items-center justify-center border-2 rounded-full' onClick={() =>{ deleteComment(item.id)} }>
+								<button className='absolute top-2 right-2 text-xs w-5 h-5 p-2 flex items-center justify-center border-2 rounded-full' onClick={() => { deleteComment(item.id) }}>
 									<span className='-translate-y-[1px]'>x</span>
 								</button>
 
@@ -257,7 +331,8 @@ function Plant_id_page({ }: Props) {
 
 								</ModalBody>
 								<ModalFooter className="w-full flex flex-col items-center gap-4">
-									<PhotoInput pictureToSend={pictureToSend} setPictureToSend={setPictureToSend} />
+									<Button onPress={!openPhoto ? () => { setOpenPhoto(true) } : () => { setOpenPhoto(false) }}>{!openPhoto ? "prendre une photo" : " fermer"}</Button>
+									{openPhoto && <> <PhotoInput pictureToSend={pictureToSend} setPictureToSend={setPictureToSend} /></>}
 									<Input type='text' label='Ajouter un commentaire...' value={comment} onChange={(e) => { setComment(e.target.value) }} />
 									<Button className='justify-end' color="primary" onClick={() => { createComment({ content: comment as string, byteImage: pictureToSend }), setModal1Open(false), setComment("") }}>
 										{/* .replace(/^data:image\/jpeg;base64,/, "") */}
