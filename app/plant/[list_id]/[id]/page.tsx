@@ -268,7 +268,7 @@ function Plant_id_page({ }: Props) {
 									<Image src={item.byteImage} alt='' />
 								</div>
 								<div className='w-1/2 h-full flex flex-col text-start'>
-									<h2> de:{item.User.userName ? item.User.userName : item.User.email}</h2>
+									<h2> de:{item.User.userName ? item.User.userName : item.User.email ? item.User.email : "Anonyme"}</h2>
 									<p className=' '>{item.content}</p>
 									<p>
 										time: {item.createdAt}
