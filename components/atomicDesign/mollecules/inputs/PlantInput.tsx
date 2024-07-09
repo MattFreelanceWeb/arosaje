@@ -28,7 +28,7 @@ function PlantInput({ setPlantSelected }: Props) {
         const fetchFromTrefle = async (query: string) => {
             setIsloading(true)
 
-            const url = `/api/fetch/trefle?query=${value}`
+            const url = `${process.env.NEXT_PUBLIC_API_URL_TEST}/api/fetch/trefle?query=${value}`
 
             try {
                 const apiData = await fetch(url)
