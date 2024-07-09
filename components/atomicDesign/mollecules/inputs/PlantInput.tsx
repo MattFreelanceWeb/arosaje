@@ -34,6 +34,7 @@ function PlantInput({ setPlantSelected }: Props) {
                 const apiData = await fetch(url)
                 const data = await apiData.json()
                 if (data) {
+                    console.log(data)
                     setPlantArray(data.plants)
                 } else {
                     setPlantArray([])

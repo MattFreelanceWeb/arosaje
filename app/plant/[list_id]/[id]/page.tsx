@@ -222,7 +222,6 @@ function Plant_id_page({ }: Props) {
 				}
 
 				const data = await response.json();
-
 				if (data) {
 					router.push(`/plant/userId=${plants?.ownerId}&addressId=${plants?.addressId}`)
 				}
