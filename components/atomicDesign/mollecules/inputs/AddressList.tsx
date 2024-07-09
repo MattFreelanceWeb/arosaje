@@ -43,24 +43,24 @@ function AddressList({ addressArray, toggleAddressList, setToggleAddressList }: 
         <>
             {addressArray.map((item) => (
                 <div key={item.id} className='flex items-center gap-2 w-full'>
-                    <Button isIconOnly color='danger' onPress={onOpen}>
+                    {/* <Button isIconOnly color='danger' onPress={onOpen}>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
                         </svg>
-                    </Button>
+                    </Button> */}
                     <Input color='primary' fullWidth isDisabled type="text" label={`${item.number} ${item.street} ${item.postalCode}  ${item.city}`} />
                     <Modal placement={"center"} isOpen={isOpen} onOpenChange={onOpenChange}>
                         <ModalContent>{(onClose) => (<>
-                            <ModalHeader>Delet this address ?</ModalHeader>
+                            <ModalHeader>Supprimer cette adresse ?</ModalHeader>
                             <ModalBody>
                                 {`${item.number} ${item.street} ${item.postalCode}  ${item.city}`}
                             </ModalBody>
                             <ModalFooter className="w-full flex items-center justify-between">
                                 <Button color="danger" variant="light" onPress={onClose} className="">
-                                    Close
+                                    Fermer
                                 </Button>
                                 <Button color="primary" onClick={() => { handleDeleteAddress(item.id), setToggleAddressList(!toggleAddressList), onClose() }}>
-                                    Delet my address
+                                    Supprimer cette adresse
                                 </Button>
                             </ModalFooter>
                         </>)}

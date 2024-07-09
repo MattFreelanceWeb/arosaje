@@ -263,12 +263,12 @@ function Plant_id_page({ }: Props) {
 					<div className='absolute top-2 w-full px-4 flex flex-col gap-4'>
 						{plants && plants?.comment?.length > 0 ? plants?.comment.map((item, i) => (
 							<div key={item.id}
-								className={`text-sm sm:text-base text-center w-full flex items-center justify-center gap-4 rounded-md  text-white p-2 relative ${item.User.id === plants.ownerId ? "bg-green-500" : "bg-black"}`}>
+								className={`text-sm sm:text-base text-center w-full flex items-center justify-center gap-4 rounded-md  text-white p-2 relative ${item.User?.id ? item.User.id === plants.ownerId ? "bg-green-500" : "bg-black" : "bg-black"}`}>
 								<div className='w-1/2 h-full'>
 									<Image src={item.byteImage} alt='' />
 								</div>
 								<div className='w-1/2 h-full flex flex-col text-start'>
-									<h2> de:{item.User.userName ? item.User.userName : item.User.email}</h2>
+									<h2> de:{item.User?.userName ? item.User.userName : item.User?.email ? item.User.email : "Anonyme"}</h2>
 									<p className=' '>{item.content}</p>
 									<p>
 										time: {item.createdAt}
