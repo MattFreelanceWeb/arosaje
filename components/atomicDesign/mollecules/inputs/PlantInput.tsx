@@ -1,5 +1,5 @@
 
-import { Autocomplete, AutocompleteItem, Avatar, CircularProgress, Input } from '@nextui-org/react'
+import { Autocomplete, AutocompleteItem, Avatar, CircularProgress, Input, Spinner } from '@nextui-org/react'
 import React, { useEffect, useState } from 'react'
 import { useDebounce } from 'use-debounce'
 
@@ -20,7 +20,7 @@ function PlantInput({ setPlantSelected }: Props) {
 
     const [plantQuery, setPlantQuery] = useState('')
     const [plantArray, setPlantArray] = useState<PlantObject[]>([])
-    const [value] = useDebounce(plantQuery, 500)
+
     const [isloading, setIsloading] = useState(false)
 
     useEffect(() => {
@@ -28,13 +28,14 @@ function PlantInput({ setPlantSelected }: Props) {
         const fetchFromTrefle = async (query: string) => {
             setIsloading(true)
 
-            const url = `${process.env.NEXT_PUBLIC_API_URL_TEST}/api/fetch/trefle?query=${value}`
+            const url = `${process.env.NEXT_PUBLIC_API_URL_TEST}/api/fetch/trefle?query=${plantQuery}`
 
             try {
                 const apiData = await fetch(url)
                 const data = await apiData.json()
                 if (data) {
-                    setPlantArray(data.plant)
+
+                    setPlantArray(data.plants)
                 } else {
                     setPlantArray([])
                 }
@@ -43,16 +44,18 @@ function PlantInput({ setPlantSelected }: Props) {
             }
             catch (error) {
                 console.log(error)
+            } finally {
+                setIsloading(false)
             }
 
-            setIsloading(false)
+
         }
 
-        if (!!value) {
-            fetchFromTrefle(value)
+        if (!!plantQuery) {
+            fetchFromTrefle(plantQuery)
         }
 
-    }, [value])
+    }, [plantQuery])
 
     return (
         <div className="flex w-full flex-wrap md:flex-nowrap gap-4" >
@@ -67,7 +70,7 @@ function PlantInput({ setPlantSelected }: Props) {
 
             >
 
-                {plantArray.map((item, i) => (<AutocompleteItem onPress={() => setPlantSelected(item)} key={item.common_name} textValue={item.common_name}>{isloading ? <CircularProgress aria-label="Loading..." /> :
+                {plantArray && plantArray.map((item, i) => (<AutocompleteItem onPress={() => setPlantSelected(item)} key={item.common_name} textValue={item.common_name}>{isloading ? <CircularProgress aria-label="Loading..." /> :
                     <div className="flex gap-2 items-center">
                         <Avatar alt={''} className="flex-shrink-0" size="sm" src={item.image_url} />
                         <div className="flex flex-col">
