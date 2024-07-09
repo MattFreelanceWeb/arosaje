@@ -116,6 +116,7 @@ function Plant_id_page({ }: Props) {
 				throw new Error('Erreur lors de la création du commentaire');
 			}
 
+			window.location.reload();
 			const data = await response.json();
 			return data;
 		} catch (error) {
@@ -331,7 +332,7 @@ function Plant_id_page({ }: Props) {
 
 								</ModalBody>
 								<ModalFooter className="w-full flex flex-col items-center gap-4">
-									<Button onPress={!openPhoto ? () => { setOpenPhoto(true) } : () => { setOpenPhoto(false) }}>{!openPhoto ? "prendre une photo" : " fermer"}</Button>
+									<Button onPress={!openPhoto ? () => { setOpenPhoto(true) } : () => { setOpenPhoto(false) }}>{!openPhoto ? "Prendre une photo" : " Fermer"}</Button>
 									{openPhoto && <> <PhotoInput pictureToSend={pictureToSend} setPictureToSend={setPictureToSend} /></>}
 									<Input type='text' label='Ajouter un commentaire...' value={comment} onChange={(e) => { setComment(e.target.value) }} />
 									<Button className='justify-end' color="primary" onClick={() => { createComment({ content: comment as string, byteImage: pictureToSend }), setModal1Open(false), setComment("") }}>
